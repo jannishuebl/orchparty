@@ -10,7 +10,7 @@ module Orcparty
       def output
         {"version" => "2", 
          "services" =>
-         ast.services.map do |service|
+        ast.applications[0].services.map do |service|
            service = service.to_h
            [service.delete(:name), HashUtils.deep_stringify_keys(service.to_h)]
          end.to_h

@@ -2,15 +2,15 @@
 version: '2'
 services:
   web:
-    image: my-web-example:latest
-    command: bundle exec rails s
     labels:
-      com.example.web: web label
       com.example.overwrite: web
       com.example.description: common description
+      com.example.web: web label
+    image: my-web-example:latest
+    command: bundle exec rails s
   db:
-    image: postgres:latest
     labels:
-      com.example.db: db label
       com.example.overwrite: global
       com.example.description: common description
+      com.example.db: db label
+    image: postgres:latest

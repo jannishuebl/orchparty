@@ -1,8 +1,15 @@
-require 'ostruct'
-require 'orcparty/ast/application'
-require 'orcparty/ast/service'
+require 'hashie'
 
 module Orcparty
-  module AST
+  class AST
+    class Node < ::Hashie::Mash
+      include Hashie::Extensions::DeepMerge
+      include Hashie::Extensions::MethodAccess
+      include Hashie::Extensions::Mash::KeepOriginalKeys
+    end
   end
 end
+require 'orcparty/ast/application'
+require 'orcparty/ast/mixin'
+require 'orcparty/ast/root'
+require 'orcparty/ast/service'

@@ -1,5 +1,6 @@
 require 'ostruct'
 require 'orcparty/transformations/all'
+require 'orcparty/transformations/mixin'
 
 module Orcparty
   module Transformations

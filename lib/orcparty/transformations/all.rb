@@ -1,11 +1,13 @@
-require 'deep_merge'
 
 module Orcparty
   module Transformations
     class All
       def transform(ast)
-        ast.services = ast.services.map do |service|
-          AST::Service.new service.to_h.deep_merge(ast.all.to_h)
+        ast.applications = ast.applications.map do |application|
+          application.services = application.services.map do |service|
+            AST::Service.new application.all.deep_merge(service)
+          end
+          application
         end
         ast
       end

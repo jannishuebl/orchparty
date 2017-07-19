@@ -1,6 +1,7 @@
 module Orcparty
-  module AST
-    class Application < OpenStruct
+  class AST
+    class Application < Node
+
     end
   end
 end

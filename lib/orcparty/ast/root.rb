@@ -1,6 +1,6 @@
 module Orcparty
   class AST
-    class Service < Node
+    class Root < Node
     end
   end
 end
