@@ -16,15 +16,15 @@ module Orcparty
   class RootBuilder
 
     def initialize
-      @root = AST::Root.new(applications: [], mixins: [])
+      @root = AST::Root.new(applications: {}, mixins: {})
     end
     def application(name, &block)
-      @root.applications << Docile.dsl_eval(ApplicationBuilder.new(name), &block).build
+      @root.applications[name] = Docile.dsl_eval(ApplicationBuilder.new(name), &block).build
       self
     end
 
     def mixin(name, &block)
-      @root.mixins << Docile.dsl_eval(MixinBuilder.new(name), &block).build
+      @root.mixins[name] = Docile.dsl_eval(MixinBuilder.new(name), &block).build
       self
     end
 
@@ -36,13 +36,13 @@ module Orcparty
   class MixinBuilder
 
     def initialize(name)
-      @mixin = AST::Mixin.new(name: name, services: [])
+      @mixin = AST::Mixin.new(name: name, services: {})
     end
 
     def service(name, &block)
       builder  = ServiceBuilder.new(name)
       builder.instance_eval(&block)
-      @mixin.services << builder._build
+      @mixin.services[name] = builder._build
       self
     end
 
@@ -54,7 +54,7 @@ module Orcparty
   class ApplicationBuilder
 
     def initialize(name)
-      @application = AST::Application.new(name: name, services: [], mixins: [])
+      @application = AST::Application.new(name: name, services: {}, mixins: [])
     end
 
     def mix(name)
@@ -71,7 +71,7 @@ module Orcparty
     def service(name, &block)
       builder  = ServiceBuilder.new(name)
       builder.instance_eval(&block)
-      @application.services << builder._build
+      @application.services[name] = builder._build
       self
     end
 

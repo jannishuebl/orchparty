@@ -13,23 +13,28 @@ describe Orcparty::DSLParser do
 
     describe "application" do
 
-      it { expect(parse.applications[0].name).to eq("web-example") }
+      let(:first_application) { parse.applications["web-example"]  }
+
+      it { expect(first_application.name).to eq("web-example") }
 
       describe "services" do
 
-        it { expect(parse.applications[0].services[0].name).to eq("web") }
-        it { expect(parse.applications[0].services[0].image).to eq("my-web-example:latest") }
-        it { expect(parse.applications[0].services[0].command).to eq("bundle exec rails s") }
+        let(:first_service) { first_application.services["web"] }
+        let(:second_service) { first_application.services["db"] }
 
-        it { expect(parse.applications[0].services[1].name).to eq("db") }
-        it { expect(parse.applications[0].services[1].image).to eq("postgres:latest") }
+        it { expect(first_service.name).to eq("web") }
+        it { expect(first_service.image).to eq("my-web-example:latest") }
+        it { expect(first_service.command).to eq("bundle exec rails s") }
+
+        it { expect(second_service.name).to eq("db") }
+        it { expect(second_service.image).to eq("postgres:latest") }
 
       end
 
       describe "all" do
 
-        it { expect(parse.applications[0].all.labels.to_a[0]).to eq([:"com.example.overwrite", "global"]) }
-        it { expect(parse.applications[0].all.labels.to_a[1]).to eq([:"com.example.description", "common description"]) }
+        it { expect(first_application.all.labels.to_a[0]).to eq([:"com.example.overwrite", "global"]) }
+        it { expect(first_application.all.labels.to_a[1]).to eq([:"com.example.description", "common description"]) }
 
       end
     end
@@ -37,14 +42,18 @@ describe Orcparty::DSLParser do
     describe "mixin" do
       let(:input_file) { "spec/input/mixin_example.rb" }
 
-      it { expect(parse.mixins[0].name).to eq("application-base") }
-      it { expect(parse.mixins[0].services[0].name).to eq("base-service-1") }
-      it { expect(parse.mixins[0].services[0].image).to eq("application-base-base-service-1:latest") }
-      it { expect(parse.mixins[0].services[0].command).to eq("bundle exec base") }
+      let(:first_mixin) { parse.mixins["application-base"]  }
+      let(:first_service) { parse.mixins["application-base"].services["base-service-1"]  }
+      let(:second_service) { parse.mixins["application-base"].services["base-service-2"]  }
 
-      it { expect(parse.mixins[0].services[1].name).to eq("base-service-2") }
-      it { expect(parse.mixins[0].services[1].image).to eq("application-base-base-service-2:latest") }
-      it { expect(parse.mixins[0].services[1].command).to eq("bundle exec base") }
+      it { expect(first_mixin.name).to eq("application-base") }
+      it { expect(first_service.name).to eq("base-service-1") }
+      it { expect(first_service.image).to eq("application-base-base-service-1:latest") }
+      it { expect(first_service.command).to eq("bundle exec base") }
+
+      it { expect(second_service.name).to eq("base-service-2") }
+      it { expect(second_service.image).to eq("application-base-base-service-2:latest") }
+      it { expect(second_service.command).to eq("bundle exec base") }
 
     end
   end
