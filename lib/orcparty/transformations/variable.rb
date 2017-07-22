@@ -3,8 +3,8 @@ module Orcparty
   module Transformations
     class Variable
       def transform(ast)
-        ast.applications = ast.applications.map do |name, application|
-          application.services = application.services.map do |name, service|
+        ast.applications.each do |_, application|
+          application.services = application.services.each do |_, service|
             service.deep_transform_values! do |v|
               if v.respond_to?(:call)
                 eval_value(build_context(application: application, service: service), v) 
@@ -12,10 +12,8 @@ module Orcparty
                 v
               end
             end
-            [name, service]
-          end.to_h
-          [name, application]
-        end.to_h
+          end
+        end
         ast
       end
 

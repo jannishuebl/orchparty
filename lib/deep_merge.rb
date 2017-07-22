@@ -1,6 +1,36 @@
 module Hashie
   module Extensions
     module DeepMergeConcat
+
+      def transform_values
+        result = self.class.new
+        each do |key, value|
+          result[key] = yield(value)
+        end
+        result
+      end
+
+      def transform_values!
+        each do |key, value|
+          self[key] = yield(value)
+        end
+      end
+
+      def transform_keys
+        result = self.class.new
+        each_key do |key|
+          result[yield(key)] = self[key]
+        end
+        result
+      end
+
+      def transform_keys!
+        keys.each do |key|
+          self[yield(key)] = delete(key)
+        end
+        self
+      end
+
       # Returns a new hash with +self+ and +other_hash+ merged recursively.
       def deep_merge_concat(other_hash, &block)
         copy = dup
