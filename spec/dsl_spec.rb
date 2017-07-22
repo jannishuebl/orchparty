@@ -68,5 +68,12 @@ describe Orcparty::DSLParser do
       it { expect(second_service.command).to eq("bundle exec base") }
 
     end
+
+    describe "import" do
+      let(:input_file) { "spec/input/import_example.rb" }
+
+      it { expect(parse.applications.keys).to include("web-example") }
+      it { expect(parse.applications.keys).to include("web-example-2") }
+    end
   end
 end

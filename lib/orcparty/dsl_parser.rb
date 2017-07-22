@@ -1,3 +1,4 @@
+require 'pathname'
 require 'docile'
 module Orcparty
   class DSLParser
@@ -9,7 +10,9 @@ module Orcparty
 
     def parse
       file_content = File.read(filename)
-      Docile.dsl_eval(RootBuilder.new, &lambda { eval(file_content) }).build
+      builder = RootBuilder.new
+      builder.instance_eval(file_content, filename)
+      builder.build
     end
   end
 
@@ -18,6 +21,15 @@ module Orcparty
     def initialize
       @root = AST::Root.new(applications: {}, mixins: {})
     end
+
+    def import(rel_file)
+      old_file_path = Pathname.new(caller[0][/[^:]+/]).parent
+      rel_file_path = Pathname.new rel_file
+      new_file_path = old_file_path + rel_file_path
+      file_content = File.read(new_file_path)
+      instance_eval(file_content, new_file_path.expand_path.to_s)
+    end
+
     def application(name, &block)
       @root.applications[name] = Docile.dsl_eval(ApplicationBuilder.new(name), &block).build
       self
