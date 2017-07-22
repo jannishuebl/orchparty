@@ -100,7 +100,7 @@ module Orcparty
   class CommonBuilder
 
     def initialize
-      @service = AST::Service.new
+      @service = AST::Service.new(mix: [])
     end
 
     def labels(&block)
@@ -108,6 +108,10 @@ module Orcparty
       builder.instance_eval(&block)
       @service.labels = builder._build
       self
+    end
+
+    def mix(name)
+      @service.mix << name
     end
 
     def method_missing(name, value)
@@ -125,7 +129,7 @@ module Orcparty
   class ServiceBuilder < CommonBuilder
 
     def initialize(name)
-      @service = AST::Service.new(name: name)
+      @service = AST::Service.new(name: name, mix: [])
     end
   end
 end

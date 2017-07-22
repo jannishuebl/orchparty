@@ -12,6 +12,16 @@ mixin "application-base" do
 
 end
 
+mixin "service-base" do
+
+  service "service-mixin" do
+    labels do
+      label "com.example.service-mixin":  "mixed"
+     end
+  end
+
+end
+
 application "child-application" do
   mix "application-base"
 
@@ -23,6 +33,7 @@ application "child-application" do
   end
 
   service "base-service-2" do
+    mix "service-base.service-mixin"
     image "child-application-base-service-2:latest"
   end
 

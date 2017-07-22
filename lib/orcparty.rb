@@ -1,3 +1,4 @@
+require "deep_merge"
 require "orcparty/version"
 require "orcparty/ast"
 require "orcparty/transformations"

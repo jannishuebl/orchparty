@@ -21,6 +21,8 @@ describe Orcparty::Transformations::Mixin do
       it { expect(second_service.image).to eq("child-application-base-service-2:latest") }
       it { expect(second_service.command).to eq("bundle exec base") }
 
+      it { expect(second_service.labels[:"com.example.service-mixin"]).to eq("mixed") }
+
     end
 
   end
