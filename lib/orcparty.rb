@@ -1,6 +1,7 @@
 require "deep_merge"
 require "orcparty/version"
 require "orcparty/ast"
+require "orcparty/context"
 require "orcparty/transformations"
 require "orcparty/generators"
 require "orcparty/dsl_parser"

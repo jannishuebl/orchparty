@@ -16,14 +16,51 @@ module Hashie
         self
       end
 
+      def deep_transform_values(&block)
+        _deep_transform_values_in_object(self, &block)
+      end
+
+      def deep_transform_values!(&block)
+        _deep_transform_values_in_object!(self, &block)
+      end
+
       private
+
+      def _deep_transform_values_in_object(object, &block)
+        case object
+        when Hash
+          object.each_with_object({}) do |arg, result|
+            key = arg.first
+            value = arg.last
+            result[key] = _deep_transform_values_in_object(value, &block)
+          end
+        when Array
+          object.map {|e| _deep_transform_values_in_object(e, &block) }
+        else
+          yield(object)
+        end
+      end
+
+      def _deep_transform_values_in_object!(object, &block)
+        case object
+        when Hash
+          object.each do |key, value|
+            object[key] = _deep_transform_values_in_object!(value, &block)
+          end
+        when Array
+          object.map! {|e| _deep_transform_values_in_object!(e, &block) }
+        else
+          yield(object)
+        end
+      end
+
 
       def _recursive_merge_concat(hash, other_hash, &block)
         other_hash.each do |k, v|
           hash[k] = if hash.key?(k) && hash[k].is_a?(::Hash) && v.is_a?(::Hash)
                       _recursive_merge(hash[k], v, &block)
                     elsif hash.key?(k) && hash[k].is_a?(::Array) && v.is_a?(::Array)
-                       hash[k].concat(v)
+                      hash[k].concat(v)
                     else
                       if hash.key?(k) && block_given?
                         block.call(k, hash[k], v)
