@@ -31,7 +31,7 @@ describe Orcparty::DSLParser do
 
         describe "variables" do
 
-          it { expect(first_service.variables.to_a[0]).to eq([:"service_var", "service"]) }
+          it { expect(first_service._variables.to_a[0]).to eq([:"service_var", "service"]) }
 
         end
 
@@ -39,7 +39,7 @@ describe Orcparty::DSLParser do
 
       describe "variables" do
 
-        it { expect(first_application.variables.to_a[0]).to eq([:"app_var", "global"]) }
+        it { expect(first_application._variables.to_a[0]).to eq([:"app_var", "global"]) }
 
       end
 

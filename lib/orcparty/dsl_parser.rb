@@ -71,7 +71,7 @@ module Orcparty
     def variables(&block)
       builder  = VariableBuilder.new
       builder.instance_eval(&block)
-      @application.variables = builder._build
+      @application._variables = builder._build
       self
     end
 
@@ -113,7 +113,7 @@ module Orcparty
   class CommonBuilder
 
     def initialize
-      @service = AST::Service.new(mix: [])
+      @service = AST::Service.new(_mix: [])
     end
 
     def labels(&block)
@@ -124,7 +124,7 @@ module Orcparty
     end
 
     def mix(name)
-      @service.mix << name
+      @service._mix << name
     end
 
     def method_missing(name, value)
@@ -138,7 +138,7 @@ module Orcparty
     def variables(&block)
       builder  = VariableBuilder.new
       builder.instance_eval(&block)
-      @service.variables = builder._build
+      @service._variables = builder._build
       self
     end
   end
@@ -149,7 +149,7 @@ module Orcparty
   class ServiceBuilder < CommonBuilder
 
     def initialize(name)
-      @service = AST::Service.new(name: name, mix: [])
+      @service = AST::Service.new(name: name, _mix: [])
     end
   end
 end
