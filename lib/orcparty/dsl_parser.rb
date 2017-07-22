@@ -68,6 +68,13 @@ module Orcparty
       self
     end
 
+    def variables(&block)
+      builder  = VariableBuilder.new
+      builder.instance_eval(&block)
+      @application.variables = builder._build
+      self
+    end
+
     def service(name, &block)
       builder  = ServiceBuilder.new(name)
       builder.instance_eval(&block)
@@ -80,21 +87,27 @@ module Orcparty
     end
   end
 
-  class LabelBuilder
+  class HashBuilder
 
     def initialize
-      @labels = {}
+      @hash = {}
     end
 
-    def label(value)
+    def method_missing(_, value)
       key, value = value.first
-      @labels[key.to_sym] = value
+      @hash[key.to_sym] = value
       self
     end
 
     def _build
-      @labels
+      @hash
     end
+  end
+
+  class LabelBuilder < HashBuilder
+  end
+
+  class VariableBuilder < HashBuilder
   end
 
   class CommonBuilder
@@ -120,6 +133,13 @@ module Orcparty
 
     def _build
       @service
+    end
+
+    def variables(&block)
+      builder  = VariableBuilder.new
+      builder.instance_eval(&block)
+      @service.variables = builder._build
+      self
     end
   end
 

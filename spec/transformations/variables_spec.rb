@@ -16,6 +16,12 @@ describe Orcparty::Transformations::Variable do
       it { expect(second_service.command).to eq("ruby db") }
       it { expect(second_service.labels[:"com.example.db"]).to eq("postgres:latest label") }
 
+      it { expect(second_service.labels[:"com.example.db"]).to eq("postgres:latest label") }
+      it { expect(second_service.labels[:"app_var"]).to eq("app") }
+      it { expect(second_service.labels[:"app_var_overwrite"]).to eq("service") }
+      it { expect(second_service.labels[:"application.app_var_overwrite"]).to eq("app") }
+      it { expect(second_service.labels[:"service_var"]).to eq("service") }
+
     end
 
   end

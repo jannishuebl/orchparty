@@ -29,6 +29,18 @@ describe Orcparty::DSLParser do
         it { expect(second_service.name).to eq("db") }
         it { expect(second_service.image).to eq("postgres:latest") }
 
+        describe "variables" do
+
+          it { expect(first_service.variables.to_a[0]).to eq([:"service_var", "service"]) }
+
+        end
+
+      end
+
+      describe "variables" do
+
+        it { expect(first_application.variables.to_a[0]).to eq([:"app_var", "global"]) }
+
       end
 
       describe "all" do

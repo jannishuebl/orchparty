@@ -21,8 +21,9 @@ module Orcparty
         context.instance_exec(&value)
       end
 
-      def build_context(opts)
-        Context.new(opts)
+      def build_context(application:, service:)
+        variables = application.variables.merge(service.variables)
+        Context.new(variables.merge({application: application.merge(application.variables), service: service.merge(service.variables)}))
       end
     end
   end
