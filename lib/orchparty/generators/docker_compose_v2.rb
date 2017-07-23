@@ -1,5 +1,5 @@
 require 'yaml'
-module Orcparty
+module Orchparty
   module Generators
     class DockerComposeV2
       attr_reader :ast

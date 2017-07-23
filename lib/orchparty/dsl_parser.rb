@@ -1,6 +1,6 @@
 require 'pathname'
 require 'docile'
-module Orcparty
+module Orchparty
   class DSLParser
     attr_reader :filename
 

@@ -1,4 +1,4 @@
-module Orcparty
+module Orchparty
   class AST
     class Service < Node
     end

@@ -1,5 +1,5 @@
 require 'psych'
-module Orcparty
+module Orchparty
   module Generators
     class DockerComposeV1
       attr_reader :ast

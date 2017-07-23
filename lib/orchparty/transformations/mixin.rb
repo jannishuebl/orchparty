@@ -1,6 +1,6 @@
 require 'byebug'
 
-module Orcparty
+module Orchparty
   module Transformations
     class Mixin
       def transform(ast)

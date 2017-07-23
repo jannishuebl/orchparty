@@ -1,17 +1,17 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'orcparty/version'
+require 'orchparty/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "orcparty"
-  spec.version       = Orcparty::VERSION
+  spec.name          = "orchparty"
+  spec.version       = Orchparty::VERSION
   spec.authors       = ["Jannis Huebl"]
   spec.email         = ["jannis.huebl@gmail.com"]
 
-  spec.summary       = %q{generate orcestraion configs}
-  spec.description   = %q{generate orcestraion configs}
-  spec.homepage      = "https://orchestration.party"
+  spec.summary       = %q{Generate configuration for orchestration plattforms}
+  spec.description   = %q{Write your orchestration configuration with a Ruby DSL that allows you to have mixins, imports and variables.}
+  spec.homepage      = "https://orch.party"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'

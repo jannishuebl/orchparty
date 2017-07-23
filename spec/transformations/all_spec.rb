@@ -1,12 +1,12 @@
 require "spec_helper"
 
-describe Orcparty::Transformations::All do
-  subject(:ast) { Orcparty::DSLParser.new("spec/input/example.rb").parse }
+describe Orchparty::Transformations::All do
+  subject(:ast) { Orchparty::DSLParser.new("spec/input/example.rb").parse }
 
 
   describe "#transform" do
 
-    subject(:transformed_ast) { Orcparty::Transformations::All.new.transform(ast) }
+    subject(:transformed_ast) { Orchparty::Transformations::All.new.transform(ast) }
 
     let(:first_application) { transformed_ast.applications["web-example"]  }
 

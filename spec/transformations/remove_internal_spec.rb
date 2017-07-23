@@ -1,11 +1,11 @@
 require "spec_helper"
 
-describe Orcparty::Transformations::RemoveInternal do
-  subject(:ast) { Orcparty::DSLParser.new("spec/input/variable_example.rb").parse }
+describe Orchparty::Transformations::RemoveInternal do
+  subject(:ast) { Orchparty::DSLParser.new("spec/input/variable_example.rb").parse }
 
   describe "#transform" do
 
-    subject(:transformed_ast) { Orcparty::Transformations::RemoveInternal.new.transform(ast) }
+    subject(:transformed_ast) { Orchparty::Transformations::RemoveInternal.new.transform(ast) }
 
     let(:first_application) { transformed_ast.applications["web-example"]  }
 

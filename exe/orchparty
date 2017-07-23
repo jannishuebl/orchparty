@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 require "thor"
-require "orcparty"
+require "orchparty"
 
 class OrchPartyCommand < Thor
   desc "generate INPUT_FILE OUTPUT_FILE APPLICATION_NAME", "generates a configuration file for an application"
@@ -8,7 +8,7 @@ class OrchPartyCommand < Thor
   method_option :aliases => "g"
   def generate(input_file, output_file, application_name)
     generator = options[:generator] || "docker_compose_v1"
-    File.write(output_file, Orcparty.send(generator.to_sym, input_file, application_name))
+    File.write(output_file, Orchparty.send(generator.to_sym, input_file, application_name))
   end
 end
 

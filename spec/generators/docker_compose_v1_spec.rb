@@ -1,12 +1,12 @@
 require "spec_helper"
 
-describe Orcparty::Generators::DockerComposeV1 do
+describe Orchparty::Generators::DockerComposeV1 do
 
   let(:input_file) { "spec/input/#{name}.rb" }
   let(:output) { File.read("spec/output/docker_compose_v1/#{name}.yml") }
   let(:application_name) {  }
 
-  subject(:generation) { Orcparty.docker_compose_v1(input_file, application_name) }
+  subject(:generation) { Orchparty.docker_compose_v1(input_file, application_name) }
 
   describe "example" do
     let(:name) {"example"}

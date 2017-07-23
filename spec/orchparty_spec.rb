@@ -1,5 +1,5 @@
 require "spec_helper"
 
-describe Orcparty do
+describe Orchparty do
 
 end

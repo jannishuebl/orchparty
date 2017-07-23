@@ -1,5 +1,5 @@
 
-module Orcparty
+module Orchparty
   module Transformations
     class RemoveInternal
       def transform(ast)

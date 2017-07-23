@@ -1,10 +1,10 @@
 require 'ostruct'
-require 'orcparty/transformations/all'
-require 'orcparty/transformations/variable'
-require 'orcparty/transformations/mixin'
-require 'orcparty/transformations/remove_internal'
+require 'orchparty/transformations/all'
+require 'orchparty/transformations/variable'
+require 'orchparty/transformations/mixin'
+require 'orchparty/transformations/remove_internal'
 
-module Orcparty
+module Orchparty
   module Transformations
     def self.transform(ast)
       ast = Mixin.new.transform(ast)

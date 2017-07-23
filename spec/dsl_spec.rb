@@ -1,14 +1,14 @@
 require "spec_helper"
 
-describe Orcparty::DSLParser do
-  subject(:parser) { Orcparty::DSLParser.new(input_file) }
+describe Orchparty::DSLParser do
+  subject(:parser) { Orchparty::DSLParser.new(input_file) }
   let(:input_file) { "spec/input/example.rb" }
 
   describe "#parse" do
 
     subject(:parse) { parser.parse }
 
-    it { expect(parse).to be_kind_of(Orcparty::AST::Root) }
+    it { expect(parse).to be_kind_of(Orchparty::AST::Root) }
 
 
     describe "application" do
