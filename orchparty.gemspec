@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.summary       = %q{Generate configuration for orchestration plattforms}
   spec.description   = %q{Write your orchestration configuration with a Ruby DSL that allows you to have mixins, imports and variables.}
   spec.homepage      = "https://orch.party"
-  spec.license       = "MIT"
+  spec.license       = "GNU Lesser General Public License v3.0"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.
