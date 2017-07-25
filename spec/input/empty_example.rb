@@ -1,0 +1,3 @@
+application "empty" do
+
+end

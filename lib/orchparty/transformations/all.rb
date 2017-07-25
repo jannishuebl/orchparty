@@ -5,7 +5,11 @@ module Orchparty
       def transform(ast)
         ast.applications.each do |_, application|
           application.services.transform_values! do |service|
-             AST::Service.new(application.all.deep_merge(service))
+            if application.all.is_a?(Hash)
+              AST::Service.new(application.all.deep_merge(service)) 
+            else
+              service
+            end
           end
         end
         ast
