@@ -8,6 +8,11 @@ application "web-example" do
       label "com.example.overwrite":  "global"
       label "com.example.description":  "common description"
     end
+    extra_hosts do
+      env "extra_host1"
+      env "extra_host2"
+      env "extra_host3"
+    end
   end
 
   service "web" do

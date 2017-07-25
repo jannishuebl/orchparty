@@ -22,6 +22,7 @@ describe Orchparty::Transformations::Mixin do
       it { expect(second_service.command).to eq("bundle exec base") }
 
       it { expect(second_service.labels[:"com.example.service-mixin"]).to eq("mixed") }
+      it { expect(second_service.labels[:"com.example.application-service-mixin"]).to eq("mixed") }
 
     end
 

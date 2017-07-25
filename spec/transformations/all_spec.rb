@@ -17,10 +17,16 @@ describe Orchparty::Transformations::All do
       it { expect(first_service.labels.to_a[0]).to eq([:"com.example.overwrite", "web"]) }
       it { expect(first_service.labels.to_a[1]).to eq([:"com.example.description", "common description"]) }
       it { expect(first_service.labels.to_a[2]).to eq([:"com.example.web", "web label"]) }
+      it { expect(first_service.extra_hosts[0]).to eq("extra_host1") }
+      it { expect(first_service.extra_hosts[1]).to eq("extra_host2") }
+      it { expect(first_service.extra_hosts[2]).to eq("extra_host3") }
 
       it { expect(second_service.labels.to_a[1]).to eq([:"com.example.description", "common description"]) }
       it { expect(second_service.labels.to_a[2]).to eq([:"com.example.db", "db label"]) }
       it { expect(second_service.labels.to_a[0]).to eq([:"com.example.overwrite", "global"]) }
+      it { expect(second_service.extra_hosts[0]).to eq("extra_host1") }
+      it { expect(second_service.extra_hosts[1]).to eq("extra_host2") }
+      it { expect(second_service.extra_hosts[2]).to eq("extra_host3") }
 
     end
 

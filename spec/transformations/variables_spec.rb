@@ -21,6 +21,7 @@ describe Orchparty::Transformations::Variable do
       it { expect(second_service.labels[:"app_var_overwrite"]).to eq("service") }
       it { expect(second_service.labels[:"application.app_var_overwrite"]).to eq("app") }
       it { expect(second_service.labels[:"service_var"]).to eq("service") }
+      it { expect(second_service.extra_hosts.first).to eq("extra_host") }
 
     end
 

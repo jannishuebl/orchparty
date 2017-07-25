@@ -4,6 +4,10 @@ web:
     com.example.overwrite: web
     com.example.description: common description
     com.example.web: web label
+  extra_hosts:
+  - extra_host1
+  - extra_host2
+  - extra_host3
   image: my-web-example:latest
   command: bundle exec rails s
 db:
@@ -11,4 +15,8 @@ db:
     com.example.overwrite: global
     com.example.description: common description
     com.example.db: db label
+  extra_hosts:
+  - extra_host1
+  - extra_host2
+  - extra_host3
   image: postgres:latest

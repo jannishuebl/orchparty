@@ -2,13 +2,7 @@ application "web-example" do
   variables do 
     var app_var: "app"
     var app_var_overwrite: "app"
-  end
-
-  all do
-    labels do
-      label "com.example.overwrite":  "global"
-      label "com.example.description":  "common description"
-     end
+    var extra_host: "extra_host"
   end
 
   service "web" do
@@ -34,6 +28,9 @@ application "web-example" do
       label "application.app_var_overwrite":  -> { application.app_var_overwrite }
       label "service_var":  -> { context.service_var }
      end
+    extra_hosts do
+      env -> {extra_host}
+    end
   end
 
 end

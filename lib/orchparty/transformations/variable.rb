@@ -8,6 +8,14 @@ module Orchparty
             service.deep_transform_values! do |v|
               if v.respond_to?(:call)
                 eval_value(build_context(application: application, service: service), v) 
+              elsif v.is_a? Array
+                v.map do |v|
+                  if v.respond_to?(:call)
+                    eval_value(build_context(application: application, service: service), v) 
+                  else
+                    v
+                  end
+                end
               else
                 v
               end

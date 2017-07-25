@@ -66,11 +66,18 @@ module Orchparty
   class ApplicationBuilder
 
     def initialize(name)
-      @application = AST::Application.new(name: name, services: {}, mixins: [])
+      @application = AST::Application.new(name: name, services: {}, mix: [], mixins: {})
     end
 
     def mix(name)
-      @application.mixins << name
+      @application.mix << name
+    end
+
+    def mixin(name, &block)
+      builder  = CommonBuilder.new
+      builder.instance_eval(&block)
+      @application.mixins[name] = builder._build
+      self
     end
 
     def all(&block)
@@ -81,7 +88,7 @@ module Orchparty
     end
 
     def variables(&block)
-      builder  = VariableBuilder.new
+      builder  = HashBuilder.new
       builder.instance_eval(&block)
       @application._variables = builder._build
       self
@@ -102,24 +109,37 @@ module Orchparty
   class HashBuilder
 
     def initialize
-      @hash = {}
     end
 
-    def method_missing(_, value)
-      key, value = value.first
-      @hash[key.to_sym] = value
+    def method_missing(_, *values, &block)
+      if block_given?
+        builder = HashBuilder.new
+        builder.instance_eval(&block)
+        value = builder._build
+        if values.count == 1
+          @hash ||= {}
+          @hash[values.first.to_sym] = value
+        else
+          @hash ||= []
+          @hash << value
+        end
+      else
+        value = values.first
+        if value.is_a? Hash
+          @hash ||= {}
+          key, value = value.first
+          @hash[key.to_sym] = value
+        else
+          @hash ||= []
+          @hash << value
+        end
+      end
       self
     end
 
     def _build
-      @hash
+      @hash || {}
     end
-  end
-
-  class LabelBuilder < HashBuilder
-  end
-
-  class VariableBuilder < HashBuilder
   end
 
   class CommonBuilder
@@ -128,19 +148,18 @@ module Orchparty
       @service = AST::Service.new(_mix: [])
     end
 
-    def labels(&block)
-      builder  = LabelBuilder.new
-      builder.instance_eval(&block)
-      @service.labels = builder._build
-      self
-    end
-
     def mix(name)
       @service._mix << name
     end
 
-    def method_missing(name, value)
-      @service[name] = value
+    def method_missing(name, *values, &block)
+      if block_given?
+        builder = HashBuilder.new
+        builder.instance_eval(&block)
+        @service[name] = builder._build
+      else
+        @service[name] = values.first
+      end
     end
 
     def _build
@@ -148,7 +167,7 @@ module Orchparty
     end
 
     def variables(&block)
-      builder  = VariableBuilder.new
+      builder  = HashBuilder.new
       builder.instance_eval(&block)
       @service._variables = builder._build
       self
