@@ -1,9 +1,17 @@
 sudo: false
 language: ruby
 rvm:
-  - 2.2
-  - 2.3
-  - 2.4
+- 2.2
+- 2.3
+- 2.4
 before_install: gem install bundler -v 1.13.6
 install: bundle install
 script: bundle exec rspec
+deploy:
+  provider: rubygems
+  api_key:
+    secure: XnUBF2iCbMQXD/hUDcbOF2Y66x2A+Fjg0qx5ceJB7ctOnh2Q6NWMjcxF0oINteryzY78gbI3BB0GnemX8nrvJ/kLxgVWSOPBPlR1ufREekSkElPnccGi6oH8D6goI0d3rtB81cwOzJl+BhXCLFiJRvySOmDBw87ENhianMwhNf+6oW/QgAHKHKuu9hJM91u5Z+8dw8x5iqMtxxiiCPSmd9T6PDknJDD3sz2XdSOMGRQO9EqFQSdngX6AbRRgOewY+klXCut44Vc8SefIqtmRQ6/VF5onTNeLL4ZJkiazS2r4Xi93jl0/lzIamqDIinbVFx5xVH1Kb3JyjkRnW/Ah6tHtwQZlJUuJLQbRFKDY+w3dXKKn7rLaV3neQ9q/0TxlHuUQqQsLV6cY38Xb0y/x+xYvNaWy7oDLe836dHIvxec3Ea7t0wt2HMk5jVuFDNm3TnSvu7mYbF+ZoYyYLFLtX35KMu7WMDQnHU6zvJPdE6EFENoximY/MiX0vvco0Z4HiQmJFRrmvA/gGKgn7qpan+6oysrLg/oVWOgYbc5BQmLoX9jxnb//BSWlxxD85tBGlG/IO1pOU/FAFNlbheqxfoF/YUyWJQCIX0V1H13+10KuLBSSX+lg4BkxmluWC4VsqMeMwTHtEgKb7x7nIJsRxmcvyqIeD/noCoSooLgUH+A=
+  gem: orchparty
+  on:
+    tags: true
+    repo: jannishuebl/orchparty
