@@ -4,6 +4,23 @@
 
 Write your orchestration configuration with a Ruby DSL that allows you to have mixins, imports and variables.
 
+```ruby
+import "../logging.rb"
+
+application 'my-cool-app' do
+  variables do
+    var port: 8080
+  end
+
+  service "api" do
+    mix "logging.syslog"
+    image "my-cool-image:latest"
+    commad -> { "bundle exec rails s -b 0.0.0.0 -p #{port}" }
+  end
+
+end
+```
+
 ## Why the Hell?
 
 ### 1. Powerfull Ruby DSL as a YAML replacement
@@ -184,10 +201,11 @@ application 'app_perf-prod' do
 end
 ```
 
-### Servicelevel Mixin
+### Service level Mixin
 
 But we might also mixin a logging config in production.
 
+```ruby
 mixin "logging" do
 
   service "syslog" do
