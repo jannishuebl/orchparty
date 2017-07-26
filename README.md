@@ -1,6 +1,7 @@
 # Orchparty
 
 [![Build Status](https://travis-ci.org/jannishuebl/orchparty.svg?branch=master)](https://travis-ci.org/jannishuebl/orchparty)
+[![Gem Version](https://badge.fury.io/rb/orchparty.svg)](https://badge.fury.io/rb/orchparty)
 
 Write your orchestration configuration with a Ruby DSL that allows you to have mixins, imports and variables.
 
