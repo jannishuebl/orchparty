@@ -1,5 +1,7 @@
 # Orchparty
 
+[![Build Status](https://travis-ci.org/jannishuebl/orchparty.svg?branch=master)](https://travis-ci.org/jannishuebl/orchparty)
+
 Write your orchestration configuration with a Ruby DSL that allows you to have mixins, imports and variables.
 
 ## Why the Hell?
@@ -52,7 +54,7 @@ orchparty and we simple compile the config for all popular orchestrationframewor
 ## Installation
 
 For installation it is nessery to have setup a ruby environment, at lease ruby
-2.3 is needed.
+2.2 is needed.
 
 Install from rubygems.org
 
