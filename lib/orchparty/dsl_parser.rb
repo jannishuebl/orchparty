@@ -48,13 +48,21 @@ module Orchparty
   class MixinBuilder
 
     def initialize(name)
-      @mixin = AST::Mixin.new(name: name, services: {})
+      @mixin = AST::Mixin.new(name: name, services: {}, mixins: {})
     end
 
     def service(name, &block)
       builder  = ServiceBuilder.new(name)
       builder.instance_eval(&block)
       @mixin.services[name] = builder._build
+      @mixin.mixins[name] = builder._build
+      self
+    end
+
+    def mixin(name, &block)
+      builder  = ServiceBuilder.new(name)
+      builder.instance_eval(&block)
+      @mixin.mixins[name] = builder._build
       self
     end
 
