@@ -30,6 +30,7 @@ module Orchparty
       end
 
       def build_context(application:, service:)
+        application._variables ||= {}
         variables = application._variables.merge(service._variables)
         Context.new(variables.merge({application: application.merge(application._variables), service: service.merge(service._variables)}))
       end
