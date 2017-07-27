@@ -7,8 +7,8 @@ require 'orchparty/transformations/remove_internal'
 module Orchparty
   module Transformations
     def self.transform(ast)
-      ast = Mixin.new.transform(ast)
       ast = All.new.transform(ast)
+      ast = Mixin.new.transform(ast)
       ast = Variable.new.transform(ast)
       ast = RemoveInternal.new.transform(ast)
     end
