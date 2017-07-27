@@ -1,6 +1,7 @@
 ---
 web:
   labels:
+    all-mixin: 'true'
     com.example.overwrite: web
     com.example.description: common description
     com.example.web: web label
@@ -12,6 +13,7 @@ web:
   command: bundle exec rails s
 db:
   labels:
+    all-mixin: 'true'
     com.example.overwrite: global
     com.example.description: common description
     com.example.db: db label
