@@ -30,7 +30,7 @@ module Orchparty
       def resolve_mixin(mix, application, ast)
         if mix.include? "."
           mixin_name, mixin_service_name = mix.split(".")
-          ast.mixins[mixin_name].services[mixin_service_name]
+          ast.mixins[mixin_name].mixins[mixin_service_name]
         else
           application.mixins[mix]
         end

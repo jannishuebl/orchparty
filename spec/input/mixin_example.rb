@@ -11,9 +11,15 @@ mixin "application-base" do
     command "bundle exec base"
   end
 
-  service "sub-mixin" do
+  mixin "sub-mixin" do
     expose do
       e 3456
+    end
+  end
+
+  mixin "mixin" do
+    expose do
+      e 6543
     end
   end
 end
@@ -52,6 +58,7 @@ application "child-application" do
 
   service "base-service-3" do
     mix "application-base.base-service-1"
+    mix "application-base.mixin"
   end
 
 end

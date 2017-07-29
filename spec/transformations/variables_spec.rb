@@ -25,5 +25,20 @@ describe Orchparty::Transformations::Variable do
 
     end
 
+    describe "variables-allowed-to-be-missing" do
+      subject(:ast) { Orchparty::DSLParser.new("spec/input/variables_allowed_to_be_missing.rb").parse }
+
+
+      let(:first_application) { transformed_ast.applications["test"]  }
+
+      describe "services" do
+
+        it { expect(first_application.services.count).to eq(1) }
+
+        it { expect(first_application.services['web'].image).to eq("image") }
+
+      end
+    end
+
   end
 end

@@ -1,9 +1,18 @@
+mixin "mixin" do
+  service "mixin1" do
+    labels do
+      label "all-mixin":  "true"
+    end
+  end
+end
+
 application "web-example" do
   variables do 
     var app_var: "global"
   end
 
   all do
+    mix "mixin.mixin1"
     labels do
       label "com.example.overwrite":  "global"
       label "com.example.description":  "common description"
