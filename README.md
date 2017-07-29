@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/jannishuebl/orchparty.svg?branch=master)](https://travis-ci.org/jannishuebl/orchparty)
 [![Gem Version](https://badge.fury.io/rb/orchparty.svg)](https://badge.fury.io/rb/orchparty)
 
-Write your orchestration configuration with a Ruby DSL that allows you to have mixins, imports and variables.
+Write your own orchestration config with a Ruby DSL that allows you to have mixins, imports and variables.
 
 ```ruby
 import "../logging.rb"
@@ -22,64 +22,62 @@ application 'my-cool-app' do
 end
 ```
 
-## Why the Hell?
+## Why the hell?
 
 ### 1. Powerfull Ruby DSL as a YAML replacement
 
-Yaml is great when it comes to Configuration, it gives a clean syntax that is
-build for humans, but is still maschine readable. For most of the
-configurations it is good enough. It even supports features like referencing,
+YAML is great for configuration, it has a clean syntax that is
+readable for humans as well as machines. In addition it suites for the most of the
+configurations. Furthermore YAML supports features like referencing,
 inheritence and multiline Strings. 
 
-In our company we run a microservcie architecture with multiple applications,
-that by themselves consits of multiple services (container types).
-But what we have realizes was that our orchestration configuration grew and got
-hell complex, which made globle changes like replacing our logging
-infrastucture quite painfull, because we need to touch every single service.
+In our company we have a microservice architecture with multiple applications,
+which is consisting of multiple services (container types).
+After a while we have realized that our orchestration configuration were growing continuously and got
+hell complex, which determine global changes like replacing our logging
+infrastucture. This changes were quite painfull, because we need to touch every single service.
 
-Some features that we wanted to have:
+Some main features for us:
 
   1. Mixin support
-  1. Import from diffrent files
-  1. Using Variables in imported config eg. Stack/Service names
+  1. Import from different files
+  1. Using variables in imported configs e.g. Stack/Service names
 
 
-Some of the features are build in YAML but were to complex for us to use.
+Some of the features are already included in YAML, unfortunately we are not able to use it, because of the complexity.
 
 
 ### 2. Use Ruby instead of Templating engines
 
-Most of the Orchestrationframeworks are using a docker-compose.yml derivat.
-But what most of them realized is that yml is not enough for komplex
+Most of the orchestration frameworks are using a derivative of docker-compose.yml.
+But most of the users realized that yml is not enough for complex
 orchestration.
 
-So most of the framework teams stated to allow a templatingengine in the
+So most of the framework teams started to allow templating engines in the
 docker-compose configuration.
 
 But why keep going with a data serialization language when we want to program
-our configuration anyway?
+our own configuration?
 
-### 3. Have one config for multiple Orchestrationframeworks
+### 3. Have one config for multiple orchestration frameworks
 
 How much effort is it to get a application running on an
-Orchestrationframeworks? We am glad when we find a prebuild docker-compose file
-that we can modify eg. for kontena.io, but when we have done it for konena.io we
+orchestration frameworks? Actually we are glad about finding a prebuild docker-compose file
+which can be modified by us e.g. for kontena.io, but after modifying kontena.io we
 have to redo nearly all the work for rancher, kubernets etc.
 
-It would be nice if people start to write the opensource application configs in
-orchparty and we simple compile the config for all popular orchestrationframeworks.
+It would be really nice, if people starting to write an opensource application config like
+orchparty and we just simply compile the config for all popular orchestration frameworks.
 
 ## Installation
 
-For installation it is nessery to have setup a ruby environment, at lease ruby
-2.2 is needed.
+Setup a Ruby Enviroment with Ruby 2.2 or higher is necessary for the intallation.
 
 Install from rubygems.org
 
     $ gem install orchparty
 
-Maybe in the future it is possible to run it in a docker container, so no local
-ruby environment is needed.
+Maybe for the future it is possible to run the gem in a docker container, so no local Ruby Environment is needed.
 
 ## Usage
 
@@ -89,14 +87,15 @@ See the commandline usage instrucution by running:
 
 ## DSL spec
 
-So lets do an example let us orchparty a beutiful app called [app_perf](https://github.com/randy-girard/app_perf) that is a
-open source replacement of new relic !
+So let us start an example! Let us implement a beautiful app called [app_perf](https://github.com/randy-girard/app_perf) with orchparty. This App is the opensource replacement for New Relic!
 
 ### Applications
 
-app_perf need a postgres to store data, redis for a queing system, a web
-handler, where all metrics are send to, and a worker that process the metrics
-and inserts them to the postgres db.
+app_perf needs the following components:
+- postgres for data storage 
+- redis as queuing system
+- web handler as receiver for all metrics 
+- worker for processing the metrics and inserting them to the postgres db.
 
 ```ruby
 application "app_perf" do
@@ -134,8 +133,7 @@ end
 
 ### Applevel Mixins
 
-But maybe we would want a production setup where we do not shipp a postgres
-because we want to use an exteral services like RDS from AWS.
+For using external services like RDS from AWS we do not want to ship postgres in a production setup.
 
 ```ruby
 mixin "app_perf" do
@@ -243,8 +241,7 @@ end
 
 ### Commonblock
 
-Maybe we want to add something to all services in one application. Of cause
-this also adds the mix "logging.syslog" and environment variables to the redis and postgres service.
+Using the all-block for adding configs to all services in one application. Of course the mix "logging.syslog" and environment variables will also added to the redis and postgres service.
 
 ```ruby
 application 'app_perf-prod' do
@@ -268,7 +265,7 @@ end
 
 ### Variables
 
-You want to use variables right? Becase DRY ;) well you can: 
+You want to use variables right? Because "DRY" ;) well you can: 
 
 ```ruby
 application "app_perf" do
@@ -318,8 +315,7 @@ special variables:
 
 ### Import
 
-Above we assumend that everything is written in one file. If you donot want to
-to that use the import feature.
+Above we assumed that everything is written in one file. If you do not want to, just use the import feature.
 
 ```ruby
 import "../logging.rb"
@@ -341,15 +337,17 @@ end
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies.
-Then, run `rake spec` to run the tests.
-You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo:
+1. run `bin/setup` to install dependencies
+2. run `rake spec` to run the tests
+You can also run `bin/console` for an interactive prompt that will allow you to make some experiments.
 
 To install this gem onto your local machine, run `bundle exec rake install`.
-To release a new version, update the version number in `version.rb`,
-and then run `bundle exec rake release`,
-which will create a git tag for the version,
-push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+
+To release a new version:
+1. update the version number in `version.rb`
+2. run `bundle exec rake release` which will create a git tag for the version
+3. push git commits and tags and additionally push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
 
@@ -361,4 +359,4 @@ and contributors are expected to adhere to the
 
 ## License
 
-The gem is available as open source under the terms of the [GNU Lesser General Public License v3.0](http://www.gnu.de/documents/lgpl-3.0.en.html).
+The gem is available as opensource project under the terms of the [GNU Lesser General Public License v3.0](http://www.gnu.de/documents/lgpl-3.0.en.html).
