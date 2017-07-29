@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/jannishuebl/orchparty.svg?branch=master)](https://travis-ci.org/jannishuebl/orchparty)
 [![Gem Version](https://badge.fury.io/rb/orchparty.svg)](https://badge.fury.io/rb/orchparty)
 [![Code Climate](https://codeclimate.com/github/jannishuebl/orchparty/badges/gpa.svg)](https://codeclimate.com/github/jannishuebl/orchparty)
+[![Test Coverage](https://codeclimate.com/github/jannishuebl/orchparty/badges/coverage.svg)](https://codeclimate.com/github/jannishuebl/orchparty/coverage)
 
 Write your own orchestration config with a Ruby DSL that allows you to have mixins, imports and variables.
 
@@ -45,7 +46,7 @@ Some main features for us:
   1. Using variables in imported configs e.g. Stack/Service names
 
 
-Some of the features are already included in YAML, unfortunately we are not able to use it, because of the complexity.
+Some of the features are already included in YAML, unfortunately we are not able to use it, because of there complexity.
 
 
 ### 2. Use Ruby instead of Templating engines
@@ -64,10 +65,10 @@ our own configuration?
 
 How much effort is it to get a application running on an
 orchestration frameworks? Actually we are glad about finding a prebuild docker-compose file
-which can be modified by us e.g. for kontena.io, but after modifying kontena.io we
+which can be modified by us e.g. for kontena.io, but after modifying for kontena.io we
 have to redo nearly all the work for rancher, kubernets etc.
 
-It would be really nice, if people starting to write an opensource application config like
+It would be really nice, if people starting to write an opensource application config using
 orchparty and we just simply compile the config for all popular orchestration frameworks.
 
 ## Installation
@@ -88,7 +89,7 @@ See the commandline usage instrucution by running:
 
 ## DSL spec
 
-So let us start an example! Let us implement a beautiful app called [app_perf](https://github.com/randy-girard/app_perf) with orchparty. This App is the opensource replacement for New Relic!
+So let us start an example! Let us implement a configuration for a beautiful app called [app_perf](https://github.com/randy-girard/app_perf) with orchparty. This App is an opensource replacement for [New Relic](https://newrelic.com/)!
 
 ### Applications
 
