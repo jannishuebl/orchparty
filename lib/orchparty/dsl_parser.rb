@@ -1,5 +1,4 @@
 require 'pathname'
-require 'docile'
 module Orchparty
   class DSLParser
     attr_reader :filename
@@ -12,11 +11,19 @@ module Orchparty
       file_content = File.read(filename)
       builder = RootBuilder.new
       builder.instance_eval(file_content, filename)
-      builder.build
+      builder._build
     end
   end
 
-  class RootBuilder
+  class Builder
+    def self.build(*args, block)
+      builder = self.new(*args)
+      builder.instance_eval(&block)
+      builder._build
+    end
+  end
+
+  class RootBuilder < Builder
 
     def initialize
       @root = AST::Root.new(applications: {}, mixins: {})
@@ -31,47 +38,44 @@ module Orchparty
     end
 
     def application(name, &block)
-      @root.applications[name] = Docile.dsl_eval(ApplicationBuilder.new(name), &block).build
+      @root.applications[name] = ApplicationBuilder.build(name, block)
       self
     end
 
     def mixin(name, &block)
-      @root.mixins[name] = Docile.dsl_eval(MixinBuilder.new(name), &block).build
+      @root.mixins[name] = MixinBuilder.build(name, block)
       self
     end
 
-    def build
+    def _build
       @root
     end
   end
 
-  class MixinBuilder
+  class MixinBuilder < Builder
 
     def initialize(name)
       @mixin = AST::Mixin.new(name: name, services: {}, mixins: {})
     end
 
     def service(name, &block)
-      builder  = ServiceBuilder.new(name)
-      builder.instance_eval(&block)
-      @mixin.services[name] = builder._build
-      @mixin.mixins[name] = builder._build
+      result = ServiceBuilder.build(name, block)
+      @mixin.services[name] = result
+      @mixin.mixins[name] = result
       self
     end
 
     def mixin(name, &block)
-      builder  = ServiceBuilder.new(name)
-      builder.instance_eval(&block)
-      @mixin.mixins[name] = builder._build
+      @mixin.mixins[name] = ServiceBuilder.build(name, block)
       self
     end
 
-    def build
+    def _build
       @mixin
     end
   end
 
-  class ApplicationBuilder
+  class ApplicationBuilder < Builder
 
     def initialize(name)
       @application = AST::Application.new(name: name, services: {}, mix: [], mixins: {})
@@ -82,48 +86,35 @@ module Orchparty
     end
 
     def mixin(name, &block)
-      builder  = CommonBuilder.new
-      builder.instance_eval(&block)
-      @application.mixins[name] = builder._build
+      @application.mixins[name] = CommonBuilder.build(block)
       self
     end
 
     def all(&block)
-      builder  = AllBuilder.new
-      builder.instance_eval(&block)
-      @application.all = builder._build
+      @application.all = AllBuilder.build(block)
       self
     end
 
     def variables(&block)
-      builder  = HashBuilder.new
-      builder.instance_eval(&block)
-      @application._variables = builder._build
+      @application._variables = HashBuilder.build(block)
       self
     end
 
     def service(name, &block)
-      builder  = ServiceBuilder.new(name)
-      builder.instance_eval(&block)
-      @application.services[name] = builder._build
+      @application.services[name] = ServiceBuilder.build(name, block)
       self
     end
 
-    def build
+    def _build
       @application
     end
   end
 
-  class HashBuilder
-
-    def initialize
-    end
+  class HashBuilder < Builder
 
     def method_missing(_, *values, &block)
       if block_given?
-        builder = HashBuilder.new
-        builder.instance_eval(&block)
-        value = builder._build
+        value = HashBuilder.build(block)
         if values.count == 1
           @hash ||= {}
           @hash[values.first.to_sym] = value
@@ -150,7 +141,7 @@ module Orchparty
     end
   end
 
-  class CommonBuilder
+  class CommonBuilder < Builder
 
     def initialize
       @service = AST::Service.new(_mix: [])
@@ -162,9 +153,7 @@ module Orchparty
 
     def method_missing(name, *values, &block)
       if block_given?
-        builder = HashBuilder.new
-        builder.instance_eval(&block)
-        @service[name] = builder._build
+        @service[name] = HashBuilder.build(block)
       else
         @service[name] = values.first
       end
@@ -175,9 +164,7 @@ module Orchparty
     end
 
     def variables(&block)
-      builder  = HashBuilder.new
-      builder.instance_eval(&block)
-      @service._variables = builder._build
+      @service._variables = HashBuilder.build(block)
       self
     end
   end
