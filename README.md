@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/jannishuebl/orchparty.svg?branch=master)](https://travis-ci.org/jannishuebl/orchparty)
 [![Gem Version](https://badge.fury.io/rb/orchparty.svg)](https://badge.fury.io/rb/orchparty)
+[![Code Climate](https://codeclimate.com/github/jannishuebl/orchparty/badges/gpa.svg)](https://codeclimate.com/github/jannishuebl/orchparty)
 
 Write your own orchestration config with a Ruby DSL that allows you to have mixins, imports and variables.
 
