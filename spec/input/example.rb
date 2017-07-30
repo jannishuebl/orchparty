@@ -4,6 +4,18 @@ mixin "mixin" do
       label "all-mixin":  "true"
     end
   end
+
+  volumes do
+    volume "data-volume-3" do
+      v external: false
+    end
+  end
+
+  networks do 
+    network "outside" do
+      net external: true
+    end
+  end
 end
 
 application "web-example" do
@@ -40,6 +52,19 @@ application "web-example" do
     image "postgres:latest"
     labels do
       label "com.example.db":  "db label"
+    end
+  end
+
+  volumes do
+    volume "data-volume-1": nil
+    volume "data-volume-2" do
+      v external: true
+    end
+  end
+
+  networks do 
+    network "inside" do
+      net external: false
     end
   end
 

@@ -7,14 +7,21 @@ module Orchparty
         @ast = ast
       end
 
+      def transform_to_yaml(hash)
+        hash = hash.deep_transform_values{|v| v.is_a?(Hash) ? v.to_h : v }
+        HashUtils.deep_stringify_keys(hash)
+      end
+
       def output(application_name)
+        application = ast.applications[application_name]
         {"version" => "2", 
+         "networks" => transform_to_yaml(application.networks),
          "services" =>
-        ast.applications[application_name].services.map do |name,service|
+        application.services.map do |name,service|
            service = service.to_h
-           service.delete(:mix)
            [service.delete(:name), HashUtils.deep_stringify_keys(service.to_h)]
-         end.to_h
+         end.to_h,
+         "volumes" => transform_to_yaml(application.volumes),
         }.to_yaml
       end
 

@@ -31,5 +31,17 @@ describe Orchparty::Transformations::Mixin do
       it { expect(third_service.expose[1]).to eq(6543) }
     end
 
+    describe "volumes" do
+
+      it { expect(first_application.volumes.count).to eq(3) }
+
+    end
+
+    describe "networks" do
+
+      it { expect(first_application.networks.count).to eq(2) }
+
+    end
+
   end
 end

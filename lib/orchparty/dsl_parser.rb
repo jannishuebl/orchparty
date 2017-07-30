@@ -55,7 +55,11 @@ module Orchparty
   class MixinBuilder < Builder
 
     def initialize(name)
-      @mixin = AST::Mixin.new(name: name, services: {}, mixins: {})
+      @mixin = AST::Mixin.new(name: name, 
+                              services: {}, 
+                              mixins: {},
+                              volumes: {},
+                              networks: {})
     end
 
     def service(name, &block)
@@ -67,7 +71,14 @@ module Orchparty
 
     def mixin(name, &block)
       @mixin.mixins[name] = ServiceBuilder.build(name, block)
-      self
+    end
+
+    def volumes(&block)
+      @mixin.volumes = HashBuilder.build(block)
+    end
+
+    def networks(&block)
+      @mixin.networks = HashBuilder.build(block)
     end
 
     def _build
@@ -78,7 +89,11 @@ module Orchparty
   class ApplicationBuilder < Builder
 
     def initialize(name)
-      @application = AST::Application.new(name: name, services: {}, mix: [], mixins: {})
+      @application = AST::Application.new(name: name,
+                                          services: {},
+                                          mix: [],
+                                          mixins: {},
+                                          volumes: {})
     end
 
     def mix(name)
@@ -98,6 +113,15 @@ module Orchparty
     def variables(&block)
       @application._variables = HashBuilder.build(block)
       self
+    end
+
+    def volumes(&block)
+      @application.volumes = HashBuilder.build(block)
+      self
+    end
+
+    def networks(&block)
+      @application.networks = HashBuilder.build(block)
     end
 
     def service(name, &block)

@@ -37,6 +37,22 @@ describe Orchparty::DSLParser do
 
       end
 
+      describe "volumes" do
+        let(:first_volume) { first_application.volumes["data-volume-1"] }
+        let(:second_volume) { first_application.volumes["data-volume-2"] }
+
+        it { expect(first_volume).to eq(nil) }
+        it { expect(second_volume).to eq({external: true}) }
+
+      end
+
+      describe "networks" do
+        let(:first_network) { first_application.networks["inside"] }
+
+        it { expect(first_network).to eq({external: false}) }
+
+      end
+
       describe "variables" do
 
         it { expect(first_application._variables.to_a[0]).to eq([:"app_var", "global"]) }
@@ -67,6 +83,18 @@ describe Orchparty::DSLParser do
       it { expect(second_service.image).to eq("application-base-base-service-2:latest") }
       it { expect(second_service.command).to eq("bundle exec base") }
 
+      describe "networks" do
+        let(:first_network) { first_mixin.networks["outside"] }
+
+        it { expect(first_network).to eq({external: true}) }
+
+      end
+
+      describe "volumes" do
+        let(:volume) { first_mixin.volumes["data-volume-3"] }
+
+        it { expect(volume).to eq({external: false}) }
+      end
     end
 
     describe "import" do
