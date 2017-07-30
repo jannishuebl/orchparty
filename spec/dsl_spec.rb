@@ -6,9 +6,9 @@ describe Orchparty::DSLParser do
 
   describe "#parse" do
 
-    subject(:parse) { parser.parse }
+    subject(:parse) { sort_ast(parser.parse) }
 
-    it { expect(parse).to be_kind_of(Orchparty::AST::Root) }
+    it { expect(parse).to be_kind_of(Orchparty::AST::Node) }
 
 
     describe "application" do
@@ -61,8 +61,8 @@ describe Orchparty::DSLParser do
 
       describe "all" do
 
-        it { expect(first_application.all.labels.to_a[0]).to eq([:"com.example.overwrite", "global"]) }
-        it { expect(first_application.all.labels.to_a[1]).to eq([:"com.example.description", "common description"]) }
+        it { expect(first_application.all.labels.to_a[0]).to eq([:"com.example.description", "common description"]) }
+        it { expect(first_application.all.labels.to_a[1]).to eq([:"com.example.overwrite", "global"]) }
 
       end
     end

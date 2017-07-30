@@ -6,7 +6,7 @@ module Orchparty
         ast.applications.each do |_, application|
           application.services.transform_values! do |service|
             if application.all.is_a?(Hash)
-              AST::Service.new(application.all.deep_merge_concat(service)) 
+              AST::Node.new(application.all.deep_merge_concat(service)) 
             else
               service
             end
