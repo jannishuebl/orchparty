@@ -22,6 +22,18 @@ mixin "application-base" do
       e 6543
     end
   end
+
+  volumes do
+    volume "data-volume-3" do
+      v external: false
+    end
+  end
+
+  networks do 
+    network "outside" do
+      net external: true
+    end
+  end
 end
 
 mixin "service-base" do
@@ -59,6 +71,19 @@ application "child-application" do
   service "base-service-3" do
     mix "application-base.base-service-1"
     mix "application-base.mixin"
+  end
+
+  volumes do
+    volume "data-volume-1": nil
+    volume "data-volume-2" do
+      v external: true
+    end
+  end
+
+  networks do 
+    network "inside" do
+      net external: false
+    end
   end
 
 end

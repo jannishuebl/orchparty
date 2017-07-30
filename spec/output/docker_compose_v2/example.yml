@@ -1,5 +1,8 @@
 ---
 version: '2'
+networks:
+  inside:
+    external: false
 services:
   web:
     labels:
@@ -24,3 +27,7 @@ services:
     - extra_host2
     - extra_host3
     image: postgres:latest
+volumes:
+  data-volume-1: 
+  data-volume-2:
+    external: true
