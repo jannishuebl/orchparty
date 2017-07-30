@@ -26,7 +26,7 @@ module Orchparty
   class RootBuilder < Builder
 
     def initialize
-      @root = AST::Root.new(applications: {}, mixins: {})
+      @root = AST::Node.new(applications: {}, mixins: {})
     end
 
     def import(rel_file)
@@ -55,7 +55,7 @@ module Orchparty
   class MixinBuilder < Builder
 
     def initialize(name)
-      @mixin = AST::Mixin.new(name: name, 
+      @mixin = AST::Node.new(name: name, 
                               services: {}, 
                               mixins: {},
                               volumes: {},
@@ -89,7 +89,7 @@ module Orchparty
   class ApplicationBuilder < Builder
 
     def initialize(name)
-      @application = AST::Application.new(name: name,
+      @application = AST::Node.new(name: name,
                                           services: {},
                                           mix: [],
                                           mixins: {},
@@ -168,7 +168,7 @@ module Orchparty
   class CommonBuilder < Builder
 
     def initialize
-      @service = AST::Service.new(_mix: [])
+      @service = AST::Node.new(_mix: [])
     end
 
     def mix(name)
@@ -199,7 +199,7 @@ module Orchparty
   class ServiceBuilder < CommonBuilder
 
     def initialize(name)
-      @service = AST::Service.new(name: name, _mix: [])
+      @service = AST::Node.new(name: name, _mix: [])
     end
   end
 end

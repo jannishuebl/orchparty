@@ -5,7 +5,7 @@ module Orchparty
     class Mixin
       def transform(ast)
         ast.applications.transform_values! do |application|
-          current = AST::Application.new
+          current = AST::Node.new
           application.mix.each do |mixin_name|
             mixin = application.mixins[mixin_name] || ast.mixins[mixin_name]
             current = current.deep_merge_concat(mixin)
@@ -17,7 +17,7 @@ module Orchparty
 
       def transform_application(application, ast)
         application.services = application.services.transform_values! do |service|
-          current = AST::Service.new
+          current = AST::Node.new
           service.delete(:_mix).each do |mix|
             mixin = transform_mixin(resolve_mixin(mix, application, ast), application, ast)
             current = current.deep_merge_concat(mixin)
@@ -37,7 +37,7 @@ module Orchparty
       end
 
       def transform_mixin(mixin, application, ast)
-        current = AST::Service.new
+        current = AST::Node.new
         mixin[:_mix].each do |mix|
           current = current.deep_merge_concat(resolve_mixin(mix, application, ast))
         end

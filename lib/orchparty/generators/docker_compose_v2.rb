@@ -15,13 +15,13 @@ module Orchparty
       def output(application_name)
         application = ast.applications[application_name]
         {"version" => "2", 
-         "networks" => transform_to_yaml(application.networks),
          "services" =>
         application.services.map do |name,service|
            service = service.to_h
            [service.delete(:name), HashUtils.deep_stringify_keys(service.to_h)]
          end.to_h,
          "volumes" => transform_to_yaml(application.volumes),
+         "networks" => transform_to_yaml(application.networks),
         }.to_yaml
       end
 

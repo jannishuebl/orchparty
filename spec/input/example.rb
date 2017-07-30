@@ -26,13 +26,13 @@ application "web-example" do
   all do
     mix "mixin.mixin1"
     labels do
-      label "com.example.overwrite":  "global"
       label "com.example.description":  "common description"
+      label "com.example.overwrite":  "global"
     end
     extra_hosts do
+      env "extra_host3"
       env "extra_host1"
       env "extra_host2"
-      env "extra_host3"
     end
   end
 

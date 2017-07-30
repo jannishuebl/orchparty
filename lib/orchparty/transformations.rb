@@ -3,6 +3,7 @@ require 'orchparty/transformations/all'
 require 'orchparty/transformations/variable'
 require 'orchparty/transformations/mixin'
 require 'orchparty/transformations/remove_internal'
+require 'orchparty/transformations/sort'
 
 module Orchparty
   module Transformations
@@ -11,6 +12,7 @@ module Orchparty
       ast = Mixin.new.transform(ast)
       ast = Variable.new.transform(ast)
       ast = RemoveInternal.new.transform(ast)
+      ast = Sort.new.transform(ast)
     end
   end
 end

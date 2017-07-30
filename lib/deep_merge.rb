@@ -31,6 +31,32 @@ module Hashie
         self
       end
 
+      def deep_sort_by_key_and_sort_array(&block)
+        self.keys.sort(&block).reduce({}) do |seed, key|
+          seed[key] = self[key]
+          if seed[key].is_a?(Hash)
+            seed[key] = seed[key].deep_sort_by_key_and_sort_array(&block)
+          elsif seed[key].is_a?(Hashie::Array)
+            seed[key] = seed[key].sort(&block)
+          end
+          seed
+        end
+      end
+
+      # Returns a new hash with +self+ and +other_hash+ merged recursively.
+      def deep_sort(&block)
+        copy = dup
+        copy.extend(Hashie::Extensions::DeepMergeConcat) unless copy.respond_to?(:deep_sort!)
+        copy.deep_sort!(&block)
+      end
+
+      # Returns a new hash with +self+ and +other_hash+ merged recursively.
+      # Modifies the receiver in place.
+      def deep_sort!(&block)
+        _recursive_sort(self, &block)
+        self
+      end
+
       # Returns a new hash with +self+ and +other_hash+ merged recursively.
       def deep_merge_concat(other_hash, &block)
         copy = dup
@@ -79,6 +105,21 @@ module Hashie
           end
         when Array
           object.map! {|e| _deep_transform_values_in_object!(e, &block) }
+        else
+          yield(object)
+        end
+      end
+
+      def _recursive_sort(object, &block)
+        case object
+        when Hash
+          object = Orchparty::AST::Node.new(object.sort {|a, b| block.call(a[0], b[0]) }.to_h)
+          object.each do |key, value|
+            object[key] = _recursive_sort(value, &block)
+          end
+          object
+        when Array
+          object.map! {|e| _recursive_sort(e, &block) }.sort(&block)
         else
           yield(object)
         end

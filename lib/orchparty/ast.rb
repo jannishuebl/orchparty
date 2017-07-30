@@ -10,7 +10,3 @@ module Orchparty
     end
   end
 end
-require 'orchparty/ast/application'
-require 'orchparty/ast/mixin'
-require 'orchparty/ast/root'
-require 'orchparty/ast/service'
