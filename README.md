@@ -86,6 +86,11 @@ Maybe for the future it is possible to run the gem in a docker container, so no 
 See the commandline usage instrucution by running:
 
     $ orchparty help
+    
+ For generating eg. use:
+
+    
+    $ orchparty g stack.rb docker-compose.yml my-cool-app -g docker_compose_v2
 
 ## DSL spec
 
