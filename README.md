@@ -336,6 +336,72 @@ application 'app_perf-prod' do
 end
 ```
 
+## Plugins
+
+Orchparty allows you to write own generators via a Plugin system. Also the
+buildin generators like docker_compose_v1 and docker_compose_v2 generators are
+only plugins. 
+
+To build your own plugin create a ruby gem with a Plugin
+configuration under lib/orchparty/plugin/#{plugin_name}.rb
+
+### Example Plugin:
+```ruby
+
+module Orchparty
+  module Plugin
+    class DockerComposeV1
+
+      def self.desc
+        # this description is shown in the cli
+        "generate docker-compose v1 file"
+      end
+
+      def self.define_flags(c)
+        # give add all flags that your Generator needs
+        # see [davetron5000/gli](https://github.com/davetron5000/gli) for
+        # documentatino of flags
+        c.flag [:output,:o], required: true, :desc => 'Set the output file'
+      end
+
+      def self.generate(application, options)
+        # Orchparty will pass the compiled application hash and all options
+        # that you required in define_flags.
+        # Here is the place where you can write your generation logic
+        File.write(options[:output], output(application))
+      end
+
+      private
+      def self.output(ast)
+        ast.services.map do |name, service|
+          service = service.to_h
+          service.delete(:mix)
+          [service.delete(:name), HashUtils.deep_stringify_keys(service.to_h)]
+        end.to_h.to_yaml
+      end
+
+    end
+  end
+end
+
+# register your plugin
+Orchparty::Plugin.register_plugin(:docker_compose_v1, Orchparty::Plugin::DockerComposeV1)
+```
+
+### Plugin Usage:
+
+#### CLI
+The CLI tries to load all plugins that you have installed as gem by using
+Gem::Specification.
+
+
+#### Code
+
+If you use orchparty as part of a own application load a plugin via:
+
+```ruby
+Orchparty.plugin(:docker_compose_v1)
+```
 
 ## Development
 

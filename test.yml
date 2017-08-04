@@ -1,0 +1,24 @@
+---
+db:
+  extra_hosts:
+  - extra_host1
+  - extra_host2
+  - extra_host3
+  image: postgres:latest
+  labels:
+    all-mixin: 'true'
+    com.example.db: db label
+    com.example.description: common description
+    com.example.overwrite: global
+web:
+  command: bundle exec rails s
+  extra_hosts:
+  - extra_host1
+  - extra_host2
+  - extra_host3
+  image: my-web-example:latest
+  labels:
+    all-mixin: 'true'
+    com.example.description: common description
+    com.example.overwrite: web
+    com.example.web: web label
