@@ -1,0 +1,2 @@
+#!/bin/bash
+cd "/rootfs${ROOT_PWD}" && orchparty $@
