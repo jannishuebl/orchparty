@@ -7,11 +7,16 @@ module Orchparty
       end
 
       def self.define_flags(c)
-        c.flag [:output,:o], required: true, :desc => 'Set the output file'
+        c.flag [:output,:o], :desc => 'Set the output file'
       end
 
       def self.generate(ast, options)
-        File.write(options[:output], output(ast))
+        output = output(ast)
+        if options[:output]
+          File.write(options[:output], output)
+        else
+          puts output
+        end
       end
 
       def self.output(ast)
