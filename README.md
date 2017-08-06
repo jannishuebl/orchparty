@@ -92,7 +92,7 @@ See the commandline usage instrucution by running:
  For generating eg. use:
 
     
-    $ orchparty g stack.rb docker-compose.yml my-cool-app -g docker_compose_v2
+    $ orchparty generate docker_compose_v2 -f stack.rb -o docker-compose.yml -a my-cool-app
 
 ### In your own piece of code
 
