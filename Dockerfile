@@ -3,7 +3,6 @@ RUN apt-get update && apt-get install -y git
 RUN mkdir /orchparty
 WORKDIR /orchparty
 ADD Gemfile .
-ADD Gemfile.lock .
 ADD orchparty.gemspec .
 ADD lib lib
 ADD .git .git
