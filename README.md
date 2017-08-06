@@ -83,6 +83,8 @@ Maybe for the future it is possible to run the gem in a docker container, so no 
 
 ## Usage
 
+### CLI
+
 See the commandline usage instrucution by running:
 
     $ orchparty help
@@ -91,6 +93,23 @@ See the commandline usage instrucution by running:
 
     
     $ orchparty g stack.rb docker-compose.yml my-cool-app -g docker_compose_v2
+
+### In your own piece of code
+
+```ruby
+require 'orchparty'
+
+# load the generator plugin you want to use
+Orchparty.plugin :docker_compose_v1
+
+Orchparty.generate(:docker_compose_v1,
+                     # all options that are needed for orchparty to transform
+                     # your input to a plain hash for generating
+                    {filename: "path/to/input_file.rb",
+                     application: "application_name_to_generate" },
+                     # all options that are needed for the plugin
+                    {output: "path/to/output_file.yml"})
+```
 
 ## DSL spec
 
