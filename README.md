@@ -111,23 +111,6 @@ Orchparty.generate(:docker_compose_v1,
                     {output: "path/to/output_file.yml"})
 ```
 
-### In your own piece of code
-
-```ruby
-require 'orchparty'
-
-# load the generator plugin you want to use
-Orchparty.plugin :docker_compose_v1
-
-Orchparty.generate(:docker_compose_v1,
-                     # all options that are needed for orchparty to transform
-                     # your input to a plain hash for generating
-                    {filename: "path/to/input_file.rb",
-                     application: "application_name_to_generate" },
-                     # all options that are needed for the plugin
-                    {output: "path/to/output_file.yml"})
-```
-
 ## DSL spec
 
 So let us start an example! Let us implement a configuration for a beautiful app called [app_perf](https://github.com/randy-girard/app_perf) with orchparty. This App is an opensource replacement for [New Relic](https://newrelic.com/)!
