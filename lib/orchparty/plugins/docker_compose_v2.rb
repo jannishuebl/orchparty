@@ -26,15 +26,16 @@ module Orchparty
       end
 
       def self.output(application)
-        {"version" => "2", 
+        output_hash = {"version" => "2", 
          "services" =>
         application.services.map do |name,service|
            service = service.to_h
            [service.delete(:name), HashUtils.deep_stringify_keys(service.to_h)]
          end.to_h,
-         "volumes" => transform_to_yaml(application.volumes),
-         "networks" => transform_to_yaml(application.networks),
-        }.to_yaml
+        }
+        output_hash["volumes"] = transform_to_yaml(application.volumes) if application.volumes && !application.volumes.empty?
+        output_hash["networks"] = transform_to_yaml(application.networks) if application.networks && !application.networks.empty?
+        output_hash.to_yaml
       end
     end
   end
