@@ -73,13 +73,31 @@ orchparty and we just simply compile the config for all popular orchestration fr
 
 ## Installation
 
-Setup a Ruby Enviroment with Ruby 2.2 or higher is necessary for the intallation.
+### Run via docker
 
-Install from rubygems.org
+**Currently only relativ path are supported when running via docker.**
+
+Add to bashrc:
+
+```bash
+  alias orchparty="docker run --rm -v /:/rootfs -e ROOT_PWD=$PWD jannishuebl/orchparty:latest"
+```
+
+As tag you can use semantic versioning eg X.X.X or X.X or X.
+
+If you use latest update by running:
+
+    $ docker pull jannishuebl/orchparty:latest
+
+### Install from rubygems.org
+
+Setup a Ruby Enviroment with Ruby 2.2 or higher is necessary for the intallation.
 
     $ gem install orchparty
 
-Maybe for the future it is possible to run the gem in a docker container, so no local Ruby Environment is needed.
+Update:
+
+    $ gem update orchparty
 
 ## Usage
 
