@@ -1,4 +1,3 @@
-
 module Orchparty
   module Transformations
     class Variable
