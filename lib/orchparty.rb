@@ -5,6 +5,7 @@ require "orchparty/context"
 require "orchparty/transformations"
 require "orchparty/dsl_parser"
 require "orchparty/plugin"
+require "orchparty/analyses"
 require "hash"
 
 module Orchparty
@@ -29,5 +30,9 @@ module Orchparty
 
   def self.generate(plugin_name, options, plugin_options)
     plugins[plugin_name].generate(ast(filename: options[:filename], application: options[:application]), plugin_options)
+  end
+
+  def self.list_missing_variables(filename: )
+    Analyses.list_missing_variables(Orchparty::DSLParser.new(filename).parse)
   end
 end
