@@ -23,11 +23,11 @@ module Orchparty
     Orchparty::Plugin.load_plugin(name)
   end
 
-  def self.ast(filename: , application:)
-    Transformations.transform(Orchparty::DSLParser.new(filename).parse).applications[application]
+  def self.ast(filename: , application:, force_variable_definition: nil )
+    Transformations.transform(Orchparty::DSLParser.new(filename).parse, force_variable_definition: force_variable_definition).applications[application]
   end
 
   def self.generate(plugin_name, options, plugin_options)
-    plugins[plugin_name].generate(ast(filename: options[:filename], application: options[:application]), plugin_options)
+    plugins[plugin_name].generate(ast(options), plugin_options)
   end
 end

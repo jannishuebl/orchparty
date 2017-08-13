@@ -1,6 +1,11 @@
 module Orchparty
   module Transformations
     class Variable
+
+      def initialize(opts = {})
+        @force_variable_definition = opts[:force_variable_definition]
+      end
+
       def transform(ast)
         ast.applications.each do |_, application|
           application.services = application.services.each do |_, service|
@@ -31,7 +36,9 @@ module Orchparty
       def build_context(application:, service:)
         application._variables ||= {}
         variables = application._variables.merge(service._variables)
-        Context.new(variables.merge({application: application.merge(application._variables), service: service.merge(service._variables)}))
+        context = Context.new(variables.merge({application: application.merge(application._variables), service: service.merge(service._variables)}))
+        context._force_variable_definition = @force_variable_definition
+        context
       end
     end
   end

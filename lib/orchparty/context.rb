@@ -7,8 +7,12 @@ module Orchparty
 
 
      def method_missing(name, *args)
-       raise "#{name} not declared for #{application.name}.#{service.name}" if  !key?(name)  && !key?(name.to_s)
+       raise "#{name} not declared for #{application.name}.#{service.name}" if @_force_variable_definition && !key?(name)  && !key?(name.to_s)
        super
+     end
+
+     def _force_variable_definition=(v)
+       @_force_variable_definition = v
      end
 
       def context
