@@ -131,7 +131,7 @@ module Hashie
           hash[k] = if hash.key?(k) && hash[k].is_a?(::Hash) && v.is_a?(::Hash)
                       _recursive_merge(hash[k], v, &block)
                     elsif hash.key?(k) && hash[k].is_a?(::Array) && v.is_a?(::Array)
-                      hash[k].concat(v)
+                      hash[k].concat(v).uniq
                     else
                       if hash.key?(k) && block_given?
                         block.call(k, hash[k], v)

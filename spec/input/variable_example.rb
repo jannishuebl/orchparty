@@ -6,7 +6,7 @@ application "web-example" do
   end
 
   service "web" do
-    image "my-web-example:latest"
+    image -> { missing_variable }
     command "bundle exec rails s"
     labels do
       label "com.example.web":  "web label"

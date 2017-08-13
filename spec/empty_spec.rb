@@ -32,5 +32,18 @@ describe Orchparty::Transformations do
       end
     end
 
+    describe "empty-mixin" do
+      subject(:ast) { Orchparty::DSLParser.new("spec/input/empty_mixin.rb").parse }
+
+
+      let(:first_application) { transformed_ast.applications["testapp"]  }
+
+      describe "services" do
+
+        it { expect(first_application.services.count).to eq(1) }
+
+      end
+    end
+
   end
 end

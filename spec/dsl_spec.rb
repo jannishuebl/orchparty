@@ -70,9 +70,9 @@ describe Orchparty::DSLParser do
     describe "mixin" do
       let(:input_file) { "spec/input/mixin_example.rb" }
 
-      let(:first_mixin) { parse.mixins["application-base"]  }
-      let(:first_service) { parse.mixins["application-base"].services["base-service-1"]  }
-      let(:second_service) { parse.mixins["application-base"].services["base-service-2"]  }
+      let(:first_mixin) { parse._mixins["application-base"]  }
+      let(:first_service) { parse._mixins["application-base"].services["base-service-1"]  }
+      let(:second_service) { parse._mixins["application-base"].services["base-service-2"]  }
 
       it { expect(first_mixin.name).to eq("application-base") }
       it { expect(first_service.name).to eq("base-service-1") }

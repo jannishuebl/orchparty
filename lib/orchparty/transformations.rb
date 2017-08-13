@@ -7,10 +7,10 @@ require 'orchparty/transformations/sort'
 
 module Orchparty
   module Transformations
-    def self.transform(ast)
+    def self.transform(ast, opts = {})
       ast = All.new.transform(ast)
       ast = Mixin.new.transform(ast)
-      ast = Variable.new.transform(ast)
+      ast = Variable.new(opts).transform(ast)
       ast = RemoveInternal.new.transform(ast)
       ast = Sort.new.transform(ast)
     end

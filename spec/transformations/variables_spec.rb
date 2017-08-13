@@ -25,8 +25,14 @@ describe Orchparty::Transformations::Variable do
 
     end
 
-    describe "variables-allowed-to-be-missing" do
-      subject(:ast) { Orchparty::DSLParser.new("spec/input/variables_allowed_to_be_missing.rb").parse }
+    describe "force_variable_definition" do
+      subject(:transformed_ast) { Orchparty::Transformations::Variable.new(force_variable_definition: true).transform(ast) }
+
+      it { expect{ transformed_ast }.to raise_error("missing_variable not declared for web-example.web") }
+    end
+
+    describe "variables-block-allowed-to-be-missing" do
+      subject(:ast) { Orchparty::DSLParser.new("spec/input/variables_block_allowed_to_be_missing.rb").parse }
 
 
       let(:first_application) { transformed_ast.applications["test"]  }

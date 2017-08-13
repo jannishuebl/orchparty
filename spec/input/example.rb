@@ -30,9 +30,9 @@ application "web-example" do
       label "com.example.overwrite":  "global"
     end
     extra_hosts do
-      env "extra_host3"
       env "extra_host1"
       env "extra_host2"
+      env "extra_host3"
     end
   end
 

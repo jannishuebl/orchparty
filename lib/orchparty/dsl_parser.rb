@@ -26,7 +26,7 @@ module Orchparty
   class RootBuilder < Builder
 
     def initialize
-      @root = AST::Node.new(applications: {}, mixins: {})
+      @root = AST.root
     end
 
     def import(rel_file)
@@ -43,7 +43,7 @@ module Orchparty
     end
 
     def mixin(name, &block)
-      @root.mixins[name] = MixinBuilder.build(name, block)
+      @root._mixins[name] = MixinBuilder.build(name, block)
       self
     end
 
@@ -55,22 +55,18 @@ module Orchparty
   class MixinBuilder < Builder
 
     def initialize(name)
-      @mixin = AST::Node.new(name: name, 
-                              services: {}, 
-                              mixins: {},
-                              volumes: {},
-                              networks: {})
+      @mixin = AST.mixin(name: name)
     end
 
     def service(name, &block)
       result = ServiceBuilder.build(name, block)
       @mixin.services[name] = result
-      @mixin.mixins[name] = result
+      @mixin._mixins[name] = result
       self
     end
 
     def mixin(name, &block)
-      @mixin.mixins[name] = ServiceBuilder.build(name, block)
+      @mixin._mixins[name] = ServiceBuilder.build(name, block)
     end
 
     def volumes(&block)
@@ -89,19 +85,15 @@ module Orchparty
   class ApplicationBuilder < Builder
 
     def initialize(name)
-      @application = AST::Node.new(name: name,
-                                          services: {},
-                                          mix: [],
-                                          mixins: {},
-                                          volumes: {})
+      @application = AST.application(name: name)
     end
 
     def mix(name)
-      @application.mix << name
+      @application._mix << name
     end
 
     def mixin(name, &block)
-      @application.mixins[name] = CommonBuilder.build(block)
+      @application._mixins[name] = ApplicationMixinBuilder.build(block)
       self
     end
 
@@ -140,20 +132,20 @@ module Orchparty
       if block_given?
         value = HashBuilder.build(block)
         if values.count == 1
-          @hash ||= {}
+          @hash ||= AST.hash
           @hash[values.first.to_sym] = value
         else
-          @hash ||= []
+          @hash ||= AST.array
           @hash << value
         end
       else
         value = values.first
         if value.is_a? Hash
-          @hash ||= {}
+          @hash ||= AST.hash
           key, value = value.first
           @hash[key.to_sym] = value
         else
-          @hash ||= []
+          @hash ||= AST.array
           @hash << value
         end
       end
@@ -161,45 +153,54 @@ module Orchparty
     end
 
     def _build
-      @hash || {}
+      @hash
     end
   end
 
   class CommonBuilder < Builder
 
-    def initialize
-      @service = AST::Node.new(_mix: [])
+    def initialize(node)
+      @node = node
     end
 
     def mix(name)
-      @service._mix << name
+      @node._mix << name
     end
 
     def method_missing(name, *values, &block)
       if block_given?
-        @service[name] = HashBuilder.build(block)
+        @node[name] = HashBuilder.build(block)
       else
-        @service[name] = values.first
+        @node[name] = values.first
       end
     end
 
     def _build
-      @service
+      @node
     end
 
     def variables(&block)
-      @service._variables = HashBuilder.build(block)
+      @node._variables = HashBuilder.build(block)
       self
     end
   end
 
   class AllBuilder < CommonBuilder
+    def initialize
+      super AST.all
+    end
+  end
+
+  class ApplicationMixinBuilder < CommonBuilder
+    def initialize
+      super AST.application_mixin
+    end
   end
 
   class ServiceBuilder < CommonBuilder
 
     def initialize(name)
-      @service = AST::Node.new(name: name, _mix: [])
+      super AST.service(name: name)
     end
   end
 end
