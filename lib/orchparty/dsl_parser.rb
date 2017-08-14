@@ -103,7 +103,7 @@ module Orchparty
     end
 
     def variables(&block)
-      @application._variables = HashBuilder.build(block)
+      @application._variables = VariableBuilder.build(block)
       self
     end
 
@@ -157,6 +157,12 @@ module Orchparty
     end
   end
 
+  class VariableBuilder < HashBuilder
+    def _build
+      super || {}
+    end
+  end
+
   class CommonBuilder < Builder
 
     def initialize(node)
@@ -180,7 +186,7 @@ module Orchparty
     end
 
     def variables(&block)
-      @node._variables = HashBuilder.build(block)
+      @node._variables = VariableBuilder.build(block)
       self
     end
   end
