@@ -25,7 +25,8 @@ describe Orchparty::Transformations::All do
       it { expect(second_service.labels.to_a[0]).to eq([:"all-mixin", "true"]) }
       it { expect(second_service.labels.to_a[1]).to eq([:"com.example.db", "db label"]) }
       it { expect(second_service.labels.to_a[2]).to eq([:"com.example.description", "common description"]) }
-      it { expect(second_service.labels.to_a[3]).to eq([:"com.example.overwrite", "global"]) }
+      it { expect(second_service.labels.to_a[3]).to eq([:"com.example.longline", "a"*79+' '+'a'*10]) }
+      it { expect(second_service.labels.to_a[4]).to eq([:"com.example.overwrite", "global"]) }
       it { expect(second_service.extra_hosts[0]).to eq("extra_host1") }
       it { expect(second_service.extra_hosts[1]).to eq("extra_host2") }
       it { expect(second_service.extra_hosts[2]).to eq("extra_host3") }

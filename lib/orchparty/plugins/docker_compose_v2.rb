@@ -35,7 +35,7 @@ module Orchparty
         }
         output_hash["volumes"] = transform_to_yaml(application.volumes) if application.volumes && !application.volumes.empty?
         output_hash["networks"] = transform_to_yaml(application.networks) if application.networks && !application.networks.empty?
-        output_hash.to_yaml
+        output_hash.to_yaml(line_width: -1)
       end
     end
   end

@@ -51,6 +51,7 @@ application "web-example" do
   service "db" do
     image "postgres:latest"
     labels do
+      label "com.example.longline": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaa"
       label "com.example.db":  "db label"
     end
   end
