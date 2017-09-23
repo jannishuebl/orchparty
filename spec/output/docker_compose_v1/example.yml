@@ -9,6 +9,7 @@ db:
     all-mixin: 'true'
     com.example.db: db label
     com.example.description: common description
+    com.example.longline: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaa
     com.example.overwrite: global
 web:
   command: bundle exec rails s

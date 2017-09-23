@@ -24,7 +24,7 @@ module Orchparty
           service = service.to_h
           service.delete(:mix)
           [service.delete(:name), HashUtils.deep_stringify_keys(service.to_h)]
-        end.to_h.to_yaml
+        end.to_h.to_yaml(line_width: -1)
       end
 
     end
