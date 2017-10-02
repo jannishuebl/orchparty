@@ -21,6 +21,7 @@ end
 application "web-example" do
   variables do 
     var app_var: "global"
+    var external: true
   end
 
   all do
@@ -60,6 +61,9 @@ application "web-example" do
     volume "data-volume-1": nil
     volume "data-volume-2" do
       v external: true
+    end
+    volume "data-volume-3" do
+      v external: -> { external }
     end
   end
 

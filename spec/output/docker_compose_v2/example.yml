@@ -29,6 +29,8 @@ volumes:
   data-volume-1: 
   data-volume-2:
     external: true
+  data-volume-3:
+    external: true
 networks:
   inside:
     external: false
