@@ -17,6 +17,9 @@ application "web-example" do
   service "db" do
     variables do 
       var service_var: "service"
+      var app_var_overwrite: "service1"
+    end
+    variables do 
       var app_var_overwrite: "service"
     end
     image "postgres:latest"

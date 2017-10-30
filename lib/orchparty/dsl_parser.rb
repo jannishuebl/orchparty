@@ -186,7 +186,8 @@ module Orchparty
     end
 
     def variables(&block)
-      @node._variables = VariableBuilder.build(block)
+      @node._variables ||= {}
+      @node._variables = @node._variables.merge(VariableBuilder.build(block))
       self
     end
   end
