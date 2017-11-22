@@ -390,6 +390,7 @@ configuration under lib/orchparty/plugin/#{plugin_name}.rb
 ### Available plugins
 
 1. [orchparty-rancher](https://github.com/pschrammel/orchparty-rancher)
+2. [orchparty-env](https://github.com/jannishuebl/orchparty-env)
 
 ### Example Plugin:
 ```ruby
