@@ -387,6 +387,10 @@ only plugins.
 To build your own plugin create a ruby gem with a Plugin
 configuration under lib/orchparty/plugin/#{plugin_name}.rb
 
+### Available plugins
+
+1. (orchparty-rancher)[https://github.com/pschrammel/orchparty-rancher]
+
 ### Example Plugin:
 ```ruby
 
