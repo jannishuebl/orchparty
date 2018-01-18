@@ -31,13 +31,15 @@ module Hashie
         self
       end
 
-      def deep_sort_by_key_and_sort_array(&block)
+      def deep_sort_by_key_and_sort_array(exclusions = [], &block)
         self.keys.sort(&block).reduce({}) do |seed, key|
           seed[key] = self[key]
-          if seed[key].is_a?(Hash)
-            seed[key] = seed[key].deep_sort_by_key_and_sort_array(&block)
-          elsif seed[key].is_a?(Hashie::Array)
-            seed[key] = seed[key].sort(&block)
+          unless exclusions.include?(key.to_s)
+            if seed[key].is_a?(Hash)
+              seed[key] = seed[key].deep_sort_by_key_and_sort_array(exclusions, &block)
+            elsif seed[key].is_a?(Hashie::Array)
+              seed[key] = seed[key].sort(&block)
+            end
           end
           seed
         end
