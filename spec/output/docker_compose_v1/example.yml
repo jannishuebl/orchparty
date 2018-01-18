@@ -1,5 +1,8 @@
 ---
 db:
+  command:
+  - postgres
+  - "--localhost"
   extra_hosts:
   - extra_host1
   - extra_host2

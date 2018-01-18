@@ -51,6 +51,8 @@ application "web-example" do
 
   service "db" do
     image "postgres:latest"
+    # stupid command to test sorting
+    command ["postgres", "--localhost"]
     labels do
       label "com.example.longline": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaa"
       label "com.example.db":  "db label"
