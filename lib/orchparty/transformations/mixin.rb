@@ -17,8 +17,7 @@ module Orchparty
         application.services = application.services.transform_values! do |service|
           current = AST.service
           service.delete(:_mix).each do |mix|
-            mixin = transform_mixin(resolve_mixin(mix, application, ast), application, ast)
-            current = current.deep_merge_concat(mixin)
+            current = current.deep_merge_concat(resolve_mixin(mix, application, ast))
           end
           current.deep_merge_concat(service)
         end
@@ -26,12 +25,13 @@ module Orchparty
       end
 
       def resolve_mixin(mix, application, ast)
-        if mix.include? "."
+        mixin = if mix.include? "."
           mixin_name, mixin_service_name = mix.split(".")
           ast._mixins[mixin_name]._mixins[mixin_service_name]
         else
           application._mixins[mix]
         end
+        transform_mixin(mixin, application, ast)
       end
 
       def transform_mixin(mixin, application, ast)

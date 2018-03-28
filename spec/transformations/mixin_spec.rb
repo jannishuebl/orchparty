@@ -43,5 +43,24 @@ describe Orchparty::Transformations::Mixin do
 
     end
 
+    context "nested mixins" do
+
+      subject(:ast) { Orchparty::DSLParser.new("spec/input/nested_mixins_example.rb").parse }
+      subject(:transformed_ast_mixin) { Orchparty::Transformations::Mixin.new.transform(ast) }
+      subject(:transformed_ast_variable) { Orchparty::Transformations::Variable.new.transform(transformed_ast_mixin) }
+
+      let(:first_application) { transformed_ast_variable.applications["nested-mixin-application"]  }
+
+      describe "services" do
+        let(:service_a) { first_application.services["service_a"] }
+        let(:service_b) { first_application.services["service_b"] }
+
+        it { expect(service_a.environment["MY_VAR"]).to eq("hello") }
+        it { expect(service_b.environment["MY_VAR"]).to eq("hello") }
+
+      end
+
+    end
+
   end
 end
