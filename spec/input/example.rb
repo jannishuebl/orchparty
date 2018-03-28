@@ -55,6 +55,8 @@ application "web-example" do
     command ["postgres", "--localhost"]
     labels do
       label "com.example.longline": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaa"
+    end
+    labels do
       label "com.example.db":  "db label"
     end
   end

@@ -21,6 +21,14 @@ module Orchparty
       builder.instance_eval(&block)
       builder._build
     end
+
+    def assign_or_merge(node, key, value)
+      if node[key]
+        node[key] = node[key].deep_merge_concat(value)
+      else
+        node[key] = value
+      end
+    end
   end
 
   class RootBuilder < Builder
@@ -175,9 +183,9 @@ module Orchparty
 
     def method_missing(name, *values, &block)
       if block_given?
-        @node[name] = HashBuilder.build(block)
+        assign_or_merge(@node, name,  HashBuilder.build(block))
       else
-        @node[name] = values.first
+        assign_or_merge(@node, name, values.first)
       end
     end
 
