@@ -7,6 +7,7 @@ module Orchparty
       include Hashie::Extensions::DeepMergeConcat
       include Hashie::Extensions::MethodAccess
       include Hashie::Extensions::Mash::KeepOriginalKeys
+      disable_warnings
     end
 
     def self.hash(args = {})
