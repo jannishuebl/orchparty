@@ -8,6 +8,10 @@ module Orchparty
       include Hashie::Extensions::MethodAccess
       include Hashie::Extensions::Mash::KeepOriginalKeys
       disable_warnings
+
+      def get_binding
+        binding
+      end
     end
 
     def self.hash(args = {})
@@ -27,7 +31,7 @@ module Orchparty
     end
 
     def self.application(args = {})
-      Node.new({services: {}, _mixins: {}, _mix:[], volumes: {}, _variables: {}, networks: {}}).merge(args)
+      Node.new({services: {}, _mixins: {}, _mix:[], volumes: {}, _variables: {}, networks: {}, _service_order: []}).merge(args)
     end
 
     def self.all(args = {})

@@ -1,4 +1,5 @@
 require 'pathname'
+require 'securerandom'
 module Orchparty
   class DSLParser
     attr_reader :filename
@@ -18,7 +19,7 @@ module Orchparty
   class Builder
     def self.build(*args, block)
       builder = self.new(*args)
-      builder.instance_eval(&block)
+      builder.instance_eval(&block) if block
       builder._build
     end
 
@@ -73,6 +74,21 @@ module Orchparty
       self
     end
 
+    def helm(name, &block)
+      result = ServiceBuilder.build(name, "helm", block)
+      @mixin.services[name] = result
+      @mixin._mixins[name] = result
+      self
+    end
+
+
+    def apply(name, &block)
+      result = ServiceBuilder.build(name, "apply", block)
+      @mixin.services[name] = result
+      @mixin._mixins[name] = result
+      self
+    end
+
     def mixin(name, &block)
       @mixin._mixins[name] = ServiceBuilder.build(name, block)
     end
@@ -120,12 +136,41 @@ module Orchparty
       self
     end
 
+    def helm(name, &block)
+      result = ServiceBuilder.build(name, "helm", block)
+      @application.services[name] = result
+      @application._service_order << name
+      self
+    end
+
+    def label(&block)
+      name = SecureRandom.hex
+      result = ServiceWithoutNameBuilder.build("label", block)
+      @application.services[name] = result
+      @application._service_order << name
+      self
+    end
+
+    def apply(name, &block)
+      result = ServiceBuilder.build(name, "apply", block)
+      @application.services[name] = result
+      @application._service_order << name
+      self
+    end
+
+    def secret_generic(name, &block)
+      result = ServiceBuilder.build(name, "secret_generic", block)
+      @application.services[name] = result
+      @application._service_order << name
+      self
+    end
+
     def networks(&block)
       @application.networks = HashBuilder.build(block)
     end
 
     def service(name, &block)
-      @application.services[name] = ServiceBuilder.build(name, block)
+      @application.services[name] = ServiceBuilder.build(name, "old_service", block)
       self
     end
 
@@ -212,10 +257,17 @@ module Orchparty
     end
   end
 
+  class ServiceWithoutNameBuilder < CommonBuilder
+
+    def initialize( type)
+      super AST.service(_type: type)
+    end
+  end
+
   class ServiceBuilder < CommonBuilder
 
-    def initialize(name)
-      super AST.service(name: name)
+    def initialize(name, type)
+      super AST.service(name: name, _type: type)
     end
   end
 end

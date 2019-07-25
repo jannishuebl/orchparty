@@ -11,6 +11,28 @@ class OrchPartyApp
 
   subcommand_option_handling :normal
 
+  desc "install kubernetes application"
+  command :install do |com|
+    com.flag [:cluster_name,:c,'cluster-name'], required: true, :desc => 'The cluster to install the app'
+    com.flag [:filename,:f,'file-name'], required: true, :desc => 'The Orchparty input file'
+    com.flag [:application,:a], required: true, :desc => 'The application that should be installed'
+    com.switch :"force-variable-definition", :default_value => false, :desc => "Raises an Error if the input contains a not defined variable"
+    com.action do |_, args|
+      Orchparty.install(cluster_name: args[:c], application_name: args[:a], force_variable_definition: args["force-variable-definition"], file_name: args[:f])
+    end
+  end
+
+  desc "upgrade kubernetes application"
+  command :upgrade do |com|
+    com.flag [:cluster_name,:c,'cluster-name'], required: true, :desc => 'The cluster to install the app'
+    com.flag [:filename,:f,'file-name'], required: true, :desc => 'The Orchparty input file'
+    com.flag [:application,:a], required: true, :desc => 'The application that should be installed'
+    com.switch :"force-variable-definition", :default_value => false, :desc => "Raises an Error if the input contains a not defined variable"
+    com.action do |_, args|
+      Orchparty.upgrade(cluster_name: args[:c], application_name: args[:a], force_variable_definition: args["force-variable-definition"], file_name: args[:f])
+    end
+  end
+
   desc "Compiles a Orchparty input file to a orchestration framework configuration"
   command :generate do |com|
     Orchparty.plugins.each do |name, plugin|
