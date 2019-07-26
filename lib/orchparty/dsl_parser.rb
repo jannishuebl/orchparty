@@ -165,12 +165,17 @@ module Orchparty
       self
     end
 
-    def networks(&block)
-      @application.networks = HashBuilder.build(block)
+    def waite(&block)
+      name = SecureRandom.hex
+      result = ServiceBuilder.build(name, "waite", block)
+      @application.services[name] = result
+      @application._service_order << name
+      self
     end
 
-    def service(name, &block)
-      @application.services[name] = ServiceBuilder.build(name, "old_service", block)
+    def chart(name, &block)
+      @application.services[name] = ChartBuilder.build(name, @application, "chart", block)
+      @application._service_order << name
       self
     end
 
@@ -268,6 +273,23 @@ module Orchparty
 
     def initialize(name, type)
       super AST.service(name: name, _type: type)
+    end
+  end
+
+  class ChartBuilder < CommonBuilder
+    def initialize(name, application, type)
+      super AST.chart(name: name, _type: type )
+      @application = application
+    end
+
+    def service(name, &block)
+      result = ServiceBuilder.build(name, "chart-service", block)
+
+      name = "chart-#{@node.name}-#{name}"
+      @application.services[name] = result
+      @application._service_order << name
+      @node._services << name
+      self
     end
   end
 end

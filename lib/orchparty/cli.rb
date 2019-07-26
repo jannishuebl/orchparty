@@ -12,6 +12,18 @@ class OrchPartyApp
   subcommand_option_handling :normal
 
   desc "install kubernetes application"
+  command :print do |com|
+    com.flag [:cluster_name,:c,'cluster-name'], required: true, :desc => 'The cluster to install the app'
+    com.flag [:filename,:f,'file-name'], required: true, :desc => 'The Orchparty input file'
+    com.flag [:application,:a], required: true, :desc => 'The application that should be installed'
+    com.switch :"force-variable-definition", :default_value => false, :desc => "Raises an Error if the input contains a not defined variable"
+    com.flag [:method,:m], required: true, :desc => 'method to print upgrade/install'
+    com.action do |_, args|
+      Orchparty.print(cluster_name: args[:c], application_name: args[:a], force_variable_definition: args["force-variable-definition"], file_name: args[:f], method: args[:m])
+    end
+  end
+
+  desc "install kubernetes application"
   command :install do |com|
     com.flag [:cluster_name,:c,'cluster-name'], required: true, :desc => 'The cluster to install the app'
     com.flag [:filename,:f,'file-name'], required: true, :desc => 'The Orchparty input file'

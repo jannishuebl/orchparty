@@ -16,11 +16,8 @@ module Orchparty
     end
 
     def self.transform_kubernetes(ast, opts = {})
-      puts ast
       ast = All.new.transform(ast)
-      puts ast
       ast = Mixin.new.transform(ast)
-      puts ast
       ast = Variable.new(opts).transform(ast)
     end
   end

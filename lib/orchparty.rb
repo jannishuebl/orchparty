@@ -43,4 +43,10 @@ module Orchparty
     app = KubernetesApplication.new(app_config: app_config, namespace: application_name, cluster_name: cluster_name, file_name: file_name)
     app.upgrade
   end
+
+  def self.print(cluster_name: , application_name: , force_variable_definition:,  file_name:, method: )
+    app_config = Transformations.transform_kubernetes(Orchparty::DSLParser.new(file_name).parse, force_variable_definition: force_variable_definition).applications[application_name]
+    app = KubernetesApplication.new(app_config: app_config, namespace: application_name, cluster_name: cluster_name, file_name: file_name)
+    app.print(method)
+  end
 end

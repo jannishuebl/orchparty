@@ -45,5 +45,9 @@ module Orchparty
     def self.service(args = {})
       Node.new(_mix:[], _variables: {}).merge(args)
     end
+
+    def self.chart(args = {})
+      Node.new(_mix:[], _variables: {}, _services: []).merge(args)
+    end
   end
 end
