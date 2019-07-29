@@ -68,7 +68,7 @@ module Orchparty
     end
 
     def service(name, &block)
-      result = ServiceBuilder.build(name, block)
+      result = ServiceMixinBuilder.build(name, block)
       @mixin.services[name] = result
       @mixin._mixins[name] = result
       self
@@ -90,7 +90,7 @@ module Orchparty
     end
 
     def mixin(name, &block)
-      @mixin._mixins[name] = ServiceBuilder.build(name, block)
+      @mixin._mixins[name] = ServiceMixinBuilder.build(name, block)
     end
 
     def volumes(&block)
@@ -165,9 +165,9 @@ module Orchparty
       self
     end
 
-    def waite(&block)
+    def wait(&block)
       name = SecureRandom.hex
-      result = ServiceBuilder.build(name, "waite", block)
+      result = ServiceBuilder.build(name, "wait", block)
       @application.services[name] = result
       @application._service_order << name
       self
@@ -273,6 +273,13 @@ module Orchparty
 
     def initialize(name, type)
       super AST.service(name: name, _type: type)
+    end
+  end
+
+  class ServiceMixinBuilder < CommonBuilder
+
+    def initialize(name)
+      super AST.service(name: name)
     end
   end
 

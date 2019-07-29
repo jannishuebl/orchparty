@@ -139,24 +139,24 @@ module Orchparty
       end
     end
 
-    class Waite < Context
+    class Wait < Context
 
-      def print_install(waite)
+      def print_install(wait)
         puts "---"
-        puts waite.cmd
+        puts wait.cmd
       end
 
-      def print_upgrade(waite)
+      def print_upgrade(wait)
         puts "---"
-        puts waite.cmd
+        puts wait.cmd
       end
 
-      def upgrade(waite)
-        eval(waite.cmd)
+      def upgrade(wait)
+        eval(wait.cmd)
       end
 
-      def install(waite)
-        eval(waite.cmd)
+      def install(wait)
+        eval(wait.cmd)
       end
     end
 
@@ -275,6 +275,10 @@ class KubernetesApplication
     each_service(:install)
   end
 
+  def upgrade
+    each_service(:upgrade)
+  end
+
   def print(method)
     each_service("print_#{method}".to_sym)
   end
@@ -300,8 +304,5 @@ class KubernetesApplication
     end
   end
 
-  def upgrade
-    each_service(:upgrade)
-  end
 end
 
