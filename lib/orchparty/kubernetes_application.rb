@@ -42,14 +42,14 @@ module Orchparty
 
       def print_install(helm)
         puts "---"
-        puts install_cmd(helm, "values.yaml")
+        puts install_cmd(helm, value_path(helm))
         puts "---"
         puts File.read(template(value_path(helm), helm, flag: "")) if value_path(helm)
       end
 
       def print_upgrade(helm)
         puts "---"
-        puts upgrade_cmd(helm, "values.yaml")
+        puts install_cmd(helm, value_path(helm))
         puts "---"
         puts File.read(template(value_path(helm), helm, flag: "")) if value_path(helm)
       end
