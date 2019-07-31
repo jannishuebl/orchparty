@@ -44,24 +44,14 @@ module Orchparty
         puts "---"
         puts install_cmd(helm, "values.yaml")
         puts "---"
-        file_path = template(value_path(helm), helm, flag: "")
-        if file_path.empty?
-          puts
-        else
-          puts File.read(file_path)
-        end
+        puts File.read(template(value_path(helm), helm, flag: "")) if value_path(helm)
       end
 
       def print_upgrade(helm)
         puts "---"
         puts upgrade_cmd(helm, "values.yaml")
         puts "---"
-        file_path = template(value_path(helm), helm, flag: "")
-        if file_path.empty?
-          puts
-        else
-          puts File.read(file_path)
-        end
+        puts File.read(template(value_path(helm), helm, flag: "")) if value_path(helm)
       end
 
 
@@ -205,6 +195,7 @@ module Orchparty
         )
 
         params.each do |app_name, subparams|
+          subparams[:chart] = chart
           generate_documents_from_erbs(
             templates_path: templates_path,
             app_name: app_name,
