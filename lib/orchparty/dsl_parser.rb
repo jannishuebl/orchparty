@@ -1,5 +1,4 @@
 require 'pathname'
-require 'securerandom'
 module Orchparty
   class DSLParser
     attr_reader :filename
@@ -19,7 +18,7 @@ module Orchparty
   class Builder
     def self.build(*args, block)
       builder = self.new(*args)
-      builder.instance_eval(&block) if block
+      builder.instance_eval(&block)
       builder._build
     end
 
@@ -68,29 +67,14 @@ module Orchparty
     end
 
     def service(name, &block)
-      result = ServiceMixinBuilder.build(name, block)
-      @mixin.services[name] = result
-      @mixin._mixins[name] = result
-      self
-    end
-
-    def helm(name, &block)
-      result = ServiceBuilder.build(name, "helm", block)
-      @mixin.services[name] = result
-      @mixin._mixins[name] = result
-      self
-    end
-
-
-    def apply(name, &block)
-      result = ServiceBuilder.build(name, "apply", block)
+      result = ServiceBuilder.build(name, block)
       @mixin.services[name] = result
       @mixin._mixins[name] = result
       self
     end
 
     def mixin(name, &block)
-      @mixin._mixins[name] = ServiceMixinBuilder.build(name, block)
+      @mixin._mixins[name] = ServiceBuilder.build(name, block)
     end
 
     def volumes(&block)
@@ -136,46 +120,12 @@ module Orchparty
       self
     end
 
-    def helm(name, &block)
-      result = ServiceBuilder.build(name, "helm", block)
-      @application.services[name] = result
-      @application._service_order << name
-      self
+    def networks(&block)
+      @application.networks = HashBuilder.build(block)
     end
 
-    def label(&block)
-      name = SecureRandom.hex
-      result = ServiceWithoutNameBuilder.build("label", block)
-      @application.services[name] = result
-      @application._service_order << name
-      self
-    end
-
-    def apply(name, &block)
-      result = ServiceBuilder.build(name, "apply", block)
-      @application.services[name] = result
-      @application._service_order << name
-      self
-    end
-
-    def secret_generic(name, &block)
-      result = ServiceBuilder.build(name, "secret_generic", block)
-      @application.services[name] = result
-      @application._service_order << name
-      self
-    end
-
-    def wait(&block)
-      name = SecureRandom.hex
-      result = ServiceBuilder.build(name, "wait", block)
-      @application.services[name] = result
-      @application._service_order << name
-      self
-    end
-
-    def chart(name, &block)
-      @application.services[name] = ChartBuilder.build(name, @application, "chart", block)
-      @application._service_order << name
+    def service(name, &block)
+      @application.services[name] = ServiceBuilder.build(name, block)
       self
     end
 
@@ -262,41 +212,10 @@ module Orchparty
     end
   end
 
-  class ServiceWithoutNameBuilder < CommonBuilder
-
-    def initialize( type)
-      super AST.service(_type: type)
-    end
-  end
-
   class ServiceBuilder < CommonBuilder
-
-    def initialize(name, type)
-      super AST.service(name: name, _type: type)
-    end
-  end
-
-  class ServiceMixinBuilder < CommonBuilder
 
     def initialize(name)
       super AST.service(name: name)
-    end
-  end
-
-  class ChartBuilder < CommonBuilder
-    def initialize(name, application, type)
-      super AST.chart(name: name, _type: type )
-      @application = application
-    end
-
-    def service(name, &block)
-      result = ServiceBuilder.build(name, "chart-service", block)
-
-      name = "chart-#{@node.name}-#{name}"
-      @application.services[name] = result
-      @application._service_order << name
-      @node._services << name
-      self
     end
   end
 end
