@@ -206,6 +206,11 @@ module Orchparty
       end
 
       def generate_documents_from_erbs(templates_path:, app_name:, params:, output_chart_path:)
+        if params[:kind].nil?
+          warn "ERROR: Could not generate service '#{app_name}'. Missing key: 'kind'."
+          exit 1
+        end
+
         kind = params.fetch(:kind)
 
         Dir[File.join(templates_path, kind, '*.erb')].each do |template_path|
