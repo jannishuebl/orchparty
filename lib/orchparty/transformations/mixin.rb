@@ -32,7 +32,7 @@ module Orchparty
           application._mixins[mix]
         end
         if mixin.nil?
-          warn "Could not find mixin: #{mix}"
+          warn "ERROR: Could not find mixin '#{mix}'."
           exit 1
         end
         transform_mixin(mixin, application, ast)
