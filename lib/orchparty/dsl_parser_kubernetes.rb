@@ -180,6 +180,35 @@ module Orchparty
         self
       end
 
+      def template(path)
+        chart_name = @application.name
+        unless @application.services[chart_name]
+          @application.services[chart_name] = AST.chart(name: chart_name, _type: "chart" )
+          @application._service_order << chart_name
+        end
+        chart = @application.services[chart_name]
+        chart.template = path
+        self
+      end
+
+      def service(name, &block)
+
+        chart_name = @application.name
+        unless @application.services[chart_name]
+          @application.services[chart_name] = AST.chart(name: chart_name, _type: "chart" )
+          @application._service_order << chart_name
+        end
+        chart = @application.services[chart_name]
+
+        result = ServiceBuilder.build(name, "chart-service", block)
+
+        name = "chart-#{chart.name}-#{name}"
+        @application.services[name] = result
+        @application._service_order << name
+        chart._services << name
+        self
+      end
+
       def _build
         @application
       end
