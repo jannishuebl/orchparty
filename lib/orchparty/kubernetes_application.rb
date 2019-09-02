@@ -30,7 +30,7 @@ module Orchparty
         file_path = File.join(self.dir_path, file_path)
         if(file_path.end_with?(".erb"))
           helm.application = OpenStruct.new(cluster_name: cluster_name, namespace: namespace)
-          template = ERB.new File.read(file_path )
+          template = Erubis::Eruby.new(File.read(file_path))
           yaml = template.result(helm.get_binding)
           file = Tempfile.new("kube-deploy.yaml")
           file.write(yaml)
