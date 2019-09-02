@@ -31,11 +31,16 @@ module Orchparty
         else
           application._mixins[mix]
         end
+        if mixin.nil?
+          warn "ERROR: Could not find mixin '#{mix}'."
+          exit 1
+        end
         transform_mixin(mixin, application, ast)
       end
 
       def transform_mixin(mixin, application, ast)
         current = AST.application_mixin
+
         mixin[:_mix].each do |mix|
           current = current.deep_merge_concat(resolve_mixin(mix, application, ast))
         end
