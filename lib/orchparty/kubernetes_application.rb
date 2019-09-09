@@ -72,7 +72,7 @@ module Orchparty
       end
 
       def upgrade_cmd(helm, fix_file_path = nil)
-        "helm upgrade --namespace #{namespace} --kube-context #{cluster_name} --version #{helm.version} #{helm.name} #{helm.chart} #{template(value_path(helm), helm, fix_file_path: fix_file_path)}"
+        "helm upgrade --namespace #{namespace} --kube-context #{cluster_name} --force --version #{helm.version} #{helm.name} #{helm.chart} #{template(value_path(helm), helm, fix_file_path: fix_file_path)}"
       end
 
       def install_cmd(helm, fix_file_path = nil)

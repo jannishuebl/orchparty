@@ -68,10 +68,32 @@ module Orchparty
         @mixin = AST.mixin(name: name)
       end
 
+      def template(path)
+        chart_name = "_mixin_temp_name"
+        unless @mixin.services[chart_name]
+          @mixin.services[chart_name] = AST.chart(name: chart_name, _type: "chart" )
+          @mixin._service_order << chart_name
+        end
+        chart = @mixin.services[chart_name]
+        chart.template = path
+        self
+      end
+
       def service(name, &block)
-        result = ServiceMixinBuilder.build(name, block)
+
+        chart_name = "_mixin_temp_name"
+        unless @mixin.services[chart_name]
+          @mixin.services[chart_name] = AST.chart(name: chart_name, _type: "chart" )
+          @mixin._service_order << chart_name
+        end
+        chart = @mixin.services[chart_name]
+
+        result = ServiceBuilder.build(name, "chart-service", block)
+
+        name = "chart-#{chart.name}-#{name}"
         @mixin.services[name] = result
-        @mixin._mixins[name] = result
+        @mixin._service_order << name
+        chart._services << name
         self
       end
 

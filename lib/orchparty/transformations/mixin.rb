@@ -6,11 +6,22 @@ module Orchparty
           current = AST.application
           application._mix.each do |mixin_name|
             mixin = application._mixins[mixin_name] || ast._mixins[mixin_name]
+            mixin = resolve_chart_name(mixin, application)
             current = current.deep_merge_concat(mixin)
           end
           transform_application(current.deep_merge_concat(application), ast)
         end
         ast
+      end
+
+      def resolve_chart_name(mixin, application)
+            if mixin.services[:_mixin_temp_name]
+              mixin.services[application.name.to_s] = mixin.services.delete("_mixin_temp_name")
+              mixin.services[application.name.to_s][:name] = application.name.to_s
+              mixin._service_order.delete("_mixin_temp_name")
+              mixin._service_order << application.name.to_s
+            end
+            mixin
       end
 
       def transform_application(application, ast)
