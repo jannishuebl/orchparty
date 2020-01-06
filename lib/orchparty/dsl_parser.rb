@@ -73,6 +73,11 @@ module Orchparty
       self
     end
 
+    def variables(&block)
+      @mixin._variables = VariableBuilder.build(block)
+      self
+    end
+
     def mixin(name, &block)
       @mixin._mixins[name] = ServiceBuilder.build(name, block)
     end
