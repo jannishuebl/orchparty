@@ -75,7 +75,7 @@ module Orchparty
       end
 
       def install_cmd(helm, fix_file_path = nil)
-        "helm install --namespace #{namespace} --kube-context #{cluster_name} --version #{helm.version} --name #{helm.name} #{helm.chart} #{template(value_path(helm), helm, fix_file_path: fix_file_path)}"
+        "helm install --namespace #{namespace} --kube-context #{cluster_name} --version #{helm.version} #{helm.name} #{helm.chart} #{template(value_path(helm), helm, fix_file_path: fix_file_path)}"
       end
     end
 
@@ -237,7 +237,7 @@ module Orchparty
 
       def print_install(chart)
         build_chart(chart) do |chart_path|
-          puts `helm template --namespace #{namespace} --kube-context #{cluster_name} --name #{chart.name} #{chart_path}`
+          puts `helm template --namespace #{namespace} --kube-context #{cluster_name} #{chart.name} #{chart_path}`
         end
       end
 
@@ -247,7 +247,7 @@ module Orchparty
 
       def install(chart)
         build_chart(chart) do |chart_path|
-          puts system("helm install --namespace #{namespace} --kube-context #{cluster_name} --name #{chart.name} #{chart_path}")
+          puts system("helm install --namespace #{namespace} --kube-context #{cluster_name} #{chart.name} #{chart_path}")
         end
       end
 
