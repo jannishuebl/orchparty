@@ -7,10 +7,8 @@ require 'tempfile'
 require 'active_support'
 require 'active_support/core_ext'
 
-
 module Orchparty
   module Services
-
     class Context
       attr_accessor :cluster_name
       attr_accessor :namespace
@@ -42,22 +40,20 @@ module Orchparty
       def print_install(helm)
         puts "---"
         puts install_cmd(helm, value_path(helm))
+        puts upgrade_cmd(helm, value_path(helm))
         puts "---"
         puts File.read(template(value_path(helm), helm, flag: "")) if value_path(helm)
       end
 
+      # On 05.02.2021 we have decided that it would be best to print both commands.
+      # This way it would be possible to debug both upgrade and install and also people would not see git diffs all the time.
       def print_upgrade(helm)
-        puts "---"
-        puts install_cmd(helm, value_path(helm))
-        puts "---"
-        puts File.read(template(value_path(helm), helm, flag: "")) if value_path(helm)
+        print_install(helm)
       end
-
 
       def upgrade(helm)
         puts system(upgrade_cmd(helm))
       end
-
 
       def install(helm)
         puts system(install_cmd(helm))
@@ -65,7 +61,6 @@ module Orchparty
     end
 
     class Helm < Context
-
       def value_path(helm)
         helm[:values]
       end
@@ -80,7 +75,6 @@ module Orchparty
     end
 
     class Apply < Context
-
       def value_path(apply)
         apply[:name]
       end
@@ -95,7 +89,6 @@ module Orchparty
     end
 
     class SecretGeneric < Context
-
       def value_path(secret)
         secret[:from_file]
       end
@@ -110,7 +103,6 @@ module Orchparty
     end
 
     class Label < Context
-
       def print_install(label)
         puts "---"
         puts install_cmd(label)
@@ -139,7 +131,6 @@ module Orchparty
     end
 
     class Wait < Context
-
       def print_install(wait)
         puts "---"
         puts wait.cmd
@@ -160,7 +151,6 @@ module Orchparty
     end
 
     class Chart < Context
-
       class CleanBinding
         def get_binding(params)
           params.instance_eval do
@@ -177,9 +167,7 @@ module Orchparty
         end
       end
 
-
       def run(templates_path:, params:, output_chart_path:, chart: )
-
         system("mkdir -p #{output_chart_path}")
         system("mkdir -p #{File.join(output_chart_path, 'templates')}")
 
@@ -233,8 +221,6 @@ module Orchparty
         File.write(output_path, document)
       end
 
-
-
       def print_install(chart)
         build_chart(chart) do |chart_path|
           puts `helm template --namespace #{namespace} --kube-context #{cluster_name} #{chart.name} #{chart_path}`
@@ -256,12 +242,9 @@ module Orchparty
           puts system("helm upgrade --namespace #{namespace} --kube-context #{cluster_name} #{chart.name} #{chart_path}")
         end
       end
-
     end
   end
 end
-
-
 
 class KubernetesApplication
   attr_accessor :cluster_name
@@ -308,6 +291,4 @@ class KubernetesApplication
       "::Orchparty::Services::#{service._type.classify}".constantize.new(cluster_name: cluster_name, namespace: namespace, file_path: file_path, app_config: app_config).send(method, service)
     end
   end
-
 end
-
