@@ -2,16 +2,13 @@ require 'erb'
 require 'erubis'
 require 'open3'
 require 'ostruct'
-require 'byebug'
 require 'yaml'
 require 'tempfile'
 require 'active_support'
 require 'active_support/core_ext'
 
-
 module Orchparty
   module Services
-
     class Context
       attr_accessor :cluster_name
       attr_accessor :namespace
@@ -43,22 +40,20 @@ module Orchparty
       def print_install(helm)
         puts "---"
         puts install_cmd(helm, value_path(helm))
+        puts upgrade_cmd(helm, value_path(helm))
         puts "---"
         puts File.read(template(value_path(helm), helm, flag: "")) if value_path(helm)
       end
 
+      # On 05.02.2021 we have decided that it would be best to print both commands.
+      # This way it would be possible to debug both upgrade and install and also people would not see git diffs all the time.
       def print_upgrade(helm)
-        puts "---"
-        puts install_cmd(helm, value_path(helm))
-        puts "---"
-        puts File.read(template(value_path(helm), helm, flag: "")) if value_path(helm)
+        print_install(helm)
       end
-
 
       def upgrade(helm)
         puts system(upgrade_cmd(helm))
       end
-
 
       def install(helm)
         puts system(install_cmd(helm))
@@ -66,22 +61,20 @@ module Orchparty
     end
 
     class Helm < Context
-
       def value_path(helm)
         helm[:values]
       end
 
       def upgrade_cmd(helm, fix_file_path = nil)
-        "helm upgrade --namespace #{namespace} --kube-context #{cluster_name} --force --version #{helm.version} #{helm.name} #{helm.chart} #{template(value_path(helm), helm, fix_file_path: fix_file_path)}"
+        "helm upgrade --namespace #{namespace} --kube-context #{cluster_name} --version #{helm.version} #{helm.name} #{helm.chart} #{template(value_path(helm), helm, fix_file_path: fix_file_path)}"
       end
 
       def install_cmd(helm, fix_file_path = nil)
-        "helm install --namespace #{namespace} --kube-context #{cluster_name} --version #{helm.version} --name #{helm.name} #{helm.chart} #{template(value_path(helm), helm, fix_file_path: fix_file_path)}"
+        "helm install --create-namespace --namespace #{namespace} --kube-context #{cluster_name} --version #{helm.version} #{helm.name} #{helm.chart} #{template(value_path(helm), helm, fix_file_path: fix_file_path)}"
       end
     end
 
     class Apply < Context
-
       def value_path(apply)
         apply[:name]
       end
@@ -96,22 +89,20 @@ module Orchparty
     end
 
     class SecretGeneric < Context
-
       def value_path(secret)
         secret[:from_file]
       end
 
       def upgrade_cmd(secret, fix_file_path=nil)
-        "kubectl --namespace #{namespace} --context #{cluster_name} create secret generic --dry-run -o yaml #{secret[:name]}  #{template(value_path(secret), secret, flag: "--from-file=", fix_file_path: fix_file_path)} | kubectl apply -f -"
+        "kubectl --namespace #{namespace} --context #{cluster_name} create secret generic --dry-run -o yaml #{secret[:name]}  #{template(value_path(secret), secret, flag: "--from-file=", fix_file_path: fix_file_path)} | kubectl --context #{cluster_name} apply -f -"
       end
 
       def install_cmd(secret, fix_file_path=nil)
-        "kubectl --namespace #{namespace} --context #{cluster_name} create secret generic --dry-run -o yaml #{secret[:name]}  #{template(value_path(secret), secret, flag: "--from-file=", fix_file_path: fix_file_path)} | kubectl apply -f -"
+        "kubectl --namespace #{namespace} --context #{cluster_name} create secret generic --dry-run -o yaml #{secret[:name]}  #{template(value_path(secret), secret, flag: "--from-file=", fix_file_path: fix_file_path)} | kubectl --context #{cluster_name} apply -f -"
       end
     end
 
     class Label < Context
-
       def print_install(label)
         puts "---"
         puts install_cmd(label)
@@ -140,7 +131,6 @@ module Orchparty
     end
 
     class Wait < Context
-
       def print_install(wait)
         puts "---"
         puts wait.cmd
@@ -161,7 +151,6 @@ module Orchparty
     end
 
     class Chart < Context
-
       class CleanBinding
         def get_binding(params)
           params.instance_eval do
@@ -173,14 +162,12 @@ module Orchparty
       def build_chart(chart)
         params = chart._services.map {|s| app_config.services[s.to_sym] }.map{|s| [s.name, s]}.to_h
         Dir.mktmpdir do |dir|
-          run(templates_path: File.join(self.dir_path, chart.template), params: params, output_chart_path: dir, chart: chart)
+          run(templates_path: File.expand_path(chart.template, self.dir_path), params: params, output_chart_path: dir, chart: chart)
           yield dir
         end
       end
 
-
       def run(templates_path:, params:, output_chart_path:, chart: )
-
         system("mkdir -p #{output_chart_path}")
         system("mkdir -p #{File.join(output_chart_path, 'templates')}")
 
@@ -219,6 +206,7 @@ module Orchparty
 
           template = Erubis::Eruby.new(File.read(template_path))
           params.app_name = app_name
+          params.templates_path = templates_path
           document = template.result(CleanBinding.new.get_binding(params))
           File.write(output_path, document)
         end
@@ -234,11 +222,9 @@ module Orchparty
         File.write(output_path, document)
       end
 
-
-
       def print_install(chart)
         build_chart(chart) do |chart_path|
-          puts `helm template --namespace #{namespace} --kube-context #{cluster_name} --name #{chart.name} #{chart_path}`
+          puts `helm template --namespace #{namespace} --kube-context #{cluster_name} #{chart.name} #{chart_path}`
         end
       end
 
@@ -248,7 +234,7 @@ module Orchparty
 
       def install(chart)
         build_chart(chart) do |chart_path|
-          puts system("helm install --namespace #{namespace} --kube-context #{cluster_name} --name #{chart.name} #{chart_path}")
+          puts system("helm install --create-namespace --namespace #{namespace} --kube-context #{cluster_name} #{chart.name} #{chart_path}")
         end
       end
 
@@ -257,12 +243,9 @@ module Orchparty
           puts system("helm upgrade --namespace #{namespace} --kube-context #{cluster_name} #{chart.name} #{chart_path}")
         end
       end
-
     end
   end
 end
-
-
 
 class KubernetesApplication
   attr_accessor :cluster_name
@@ -309,6 +292,4 @@ class KubernetesApplication
       "::Orchparty::Services::#{service._type.classify}".constantize.new(cluster_name: cluster_name, namespace: namespace, file_path: file_path, app_config: app_config).send(method, service)
     end
   end
-
 end
-
