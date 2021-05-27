@@ -162,7 +162,7 @@ module Orchparty
       def build_chart(chart)
         params = chart._services.map {|s| app_config.services[s.to_sym] }.map{|s| [s.name, s]}.to_h
         Dir.mktmpdir do |dir|
-          run(templates_path: File.join(self.dir_path, chart.template), params: params, output_chart_path: dir, chart: chart)
+          run(templates_path: File.expand_path(chart.template, self.dir_path), params: params, output_chart_path: dir, chart: chart)
           yield dir
         end
       end
@@ -206,6 +206,7 @@ module Orchparty
 
           template = Erubis::Eruby.new(File.read(template_path))
           params.app_name = app_name
+          params.templates_path = templates_path
           document = template.result(CleanBinding.new.get_binding(params))
           File.write(output_path, document)
         end
