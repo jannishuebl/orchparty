@@ -127,14 +127,6 @@ module Orchparty
         puts upgrade_cmd(label)
       end
 
-      def upgrade(label)
-        puts system(upgrade_cmd(label))
-      end
-
-      def install(label)
-        puts system(install_cmd(label))
-      end
-
       def upgrade_cmd(label)
         "kubectl --namespace #{namespace} --context #{cluster_name} label --overwrite #{label[:resource]} #{label[:name]} #{label["value"]}"
       end
