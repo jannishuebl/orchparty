@@ -88,6 +88,20 @@ module Orchparty
       end
     end
 
+    class Replace < Context
+      def value_path(replace)
+        replace[:name]
+      end
+
+      def upgrade_cmd(replace, fix_file_path = nil)
+        "kubectl replace --namespace #{namespace} --context #{cluster_name} #{template(value_path(replace), replace, fix_file_path: fix_file_path)}"
+      end
+
+      def install_cmd(replace, fix_file_path = nil)
+        "kubectl replace --namespace #{namespace} --context #{cluster_name} #{template(value_path(replace), replace, fix_file_path: fix_file_path)}"
+      end
+    end
+
     class SecretGeneric < Context
       def value_path(secret)
         secret[:from_file]
