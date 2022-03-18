@@ -52,11 +52,26 @@ module Orchparty
       end
 
       def upgrade(helm)
-        puts system(upgrade_cmd(helm))
+        run_command(upgrade_cmd(helm))
       end
 
       def install(helm)
-        puts system(install_cmd(helm))
+        run_command(install_cmd(helm))
+      end
+
+      private
+
+      def run_command(command)
+        puts "Executing command: #{command}"
+        stdout_and_stderr_str, status = Open3.capture2e(command)
+        unless status.success?
+          # Print inverted (7) red (31) on default (49).
+          puts format("\033[%d;%d;%dm%s\033[0m", 7, 31, 49, 'The command failed!')
+        end
+        puts stdout_and_stderr_str
+        puts
+
+        status.success?
       end
     end
 
@@ -240,13 +255,13 @@ module Orchparty
 
       def install(chart)
         build_chart(chart) do |chart_path|
-          puts system("helm install --create-namespace --namespace #{namespace} --kube-context #{cluster_name} #{chart.name} #{chart_path}")
+          run_command("helm install --create-namespace --namespace #{namespace} --kube-context #{cluster_name} #{chart.name} #{chart_path}")
         end
       end
 
       def upgrade(chart)
         build_chart(chart) do |chart_path|
-          puts system("helm upgrade --namespace #{namespace} --kube-context #{cluster_name} #{chart.name} #{chart_path}")
+          run_command("helm upgrade --namespace #{namespace} --kube-context #{cluster_name} #{chart.name} #{chart_path}")
         end
       end
     end
