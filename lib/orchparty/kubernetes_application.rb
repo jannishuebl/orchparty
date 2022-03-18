@@ -164,10 +164,12 @@ module Orchparty
 
       def upgrade(wait)
         eval(wait.cmd)
+        true
       end
 
       def install(wait)
         eval(wait.cmd)
+        true
       end
     end
 
@@ -282,15 +284,35 @@ class KubernetesApplication
   end
 
   def install
-    each_service(:install)
+    results = []
+    each_service do |service, config|
+      results << service.install(config)
+    end
+
+    if results.all?
+      puts 'Done ✅'
+    else
+      puts 'Some commands failed ❗️❗️❗️'
+    end
   end
 
   def upgrade
-    each_service(:upgrade)
+    results = []
+    each_service do |service, config|
+      results << service.upgrade(config)
+    end
+
+    if results.all?
+      puts 'Done ✅'
+    else
+      puts 'Some commands failed ❗️❗️❗️'
+    end
   end
 
   def print(method)
-    each_service("print_#{method}".to_sym)
+    each_service do |service, config|
+      service.send("print_#{method}".to_sym, config)
+    end
   end
 
   def combine_charts(app_config)
@@ -306,11 +328,12 @@ class KubernetesApplication
     services
   end
 
-  def each_service(method)
+  def each_service
     services = combine_charts(app_config)
     services.each do |name|
-      service = app_config[:services][name]
-      "::Orchparty::Services::#{service._type.classify}".constantize.new(cluster_name: cluster_name, namespace: namespace, file_path: file_path, app_config: app_config).send(method, service)
+      config = app_config[:services][name]
+      service = "::Orchparty::Services::#{config._type.classify}".constantize.new(cluster_name: cluster_name, namespace: namespace, file_path: file_path, app_config: app_config)
+      yield(service, config)
     end
   end
 end
