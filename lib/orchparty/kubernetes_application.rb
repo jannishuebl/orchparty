@@ -52,11 +52,30 @@ module Orchparty
       end
 
       def upgrade(helm)
-        puts system(upgrade_cmd(helm))
+        run_command(upgrade_cmd(helm))
       end
 
       def install(helm)
-        puts system(install_cmd(helm))
+        run_command(install_cmd(helm))
+      end
+
+      private
+
+      def run_command(command)
+        puts "Executing command: #{command}"
+        stdout_and_stderr_str, status = Open3.capture2e(command)
+        unless status.success?
+          # Print inverted (7) red (31) on default (49).
+          puts format("\033[%d;%d;%dm%s\033[0m", 7, 31, 49, 'The command failed!')
+        end
+        puts stdout_and_stderr_str
+        puts
+
+        status.success?
+      end
+
+      def create_namespace_cmd
+        "kubectl --context #{cluster_name} create namespace #{namespace} --dry-run=client -o yaml | kubectl --context #{cluster_name} apply -f -"
       end
     end
 
@@ -84,7 +103,21 @@ module Orchparty
       end
 
       def install_cmd(apply, fix_file_path = nil)
-        "kubectl apply --namespace #{namespace} --context #{cluster_name} #{template(value_path(apply), apply, fix_file_path: fix_file_path)}"
+        create_namespace_cmd + "&& kubectl apply --namespace #{namespace} --context #{cluster_name} #{template(value_path(apply), apply, fix_file_path: fix_file_path)}"
+      end
+    end
+
+    class CreateReplace < Context
+      def value_path(config)
+        config[:name]
+      end
+
+      def upgrade_cmd(config, fix_file_path = nil)
+        "kubectl replace --namespace #{namespace} --context #{cluster_name} #{template(value_path(config), config, fix_file_path: fix_file_path)}"
+      end
+
+      def install_cmd(config, fix_file_path = nil)
+        create_namespace_cmd + "&& kubectl create --namespace #{namespace} --context #{cluster_name} #{template(value_path(config), config, fix_file_path: fix_file_path)}"
       end
     end
 
@@ -98,7 +131,7 @@ module Orchparty
       end
 
       def install_cmd(secret, fix_file_path=nil)
-        "kubectl --namespace #{namespace} --context #{cluster_name} create secret generic --dry-run -o yaml #{secret[:name]}  #{template(value_path(secret), secret, flag: "--from-file=", fix_file_path: fix_file_path)} | kubectl --context #{cluster_name} apply -f -"
+        create_namespace_cmd + "&& kubectl --namespace #{namespace} --context #{cluster_name} create secret generic --dry-run -o yaml #{secret[:name]}  #{template(value_path(secret), secret, flag: "--from-file=", fix_file_path: fix_file_path)} | kubectl --context #{cluster_name} apply -f -"
       end
     end
 
@@ -113,20 +146,12 @@ module Orchparty
         puts upgrade_cmd(label)
       end
 
-      def upgrade(label)
-        puts system(upgrade_cmd(label))
-      end
-
-      def install(label)
-        puts system(install_cmd(label))
-      end
-
       def upgrade_cmd(label)
         "kubectl --namespace #{namespace} --context #{cluster_name} label --overwrite #{label[:resource]} #{label[:name]} #{label["value"]}"
       end
 
       def install_cmd(label)
-        "kubectl --namespace #{namespace} --context #{cluster_name} label --overwrite #{label[:resource]} #{label[:name]} #{label["value"]}"
+        create_namespace_cmd + "&& kubectl --namespace #{namespace} --context #{cluster_name} label --overwrite #{label[:resource]} #{label[:name]} #{label["value"]}"
       end
     end
 
@@ -143,10 +168,12 @@ module Orchparty
 
       def upgrade(wait)
         eval(wait.cmd)
+        true
       end
 
       def install(wait)
         eval(wait.cmd)
+        true
       end
     end
 
@@ -234,13 +261,13 @@ module Orchparty
 
       def install(chart)
         build_chart(chart) do |chart_path|
-          puts system("helm install --create-namespace --namespace #{namespace} --kube-context #{cluster_name} #{chart.name} #{chart_path}")
+          run_command("helm install --create-namespace --namespace #{namespace} --kube-context #{cluster_name} #{chart.name} #{chart_path}")
         end
       end
 
       def upgrade(chart)
         build_chart(chart) do |chart_path|
-          puts system("helm upgrade --namespace #{namespace} --kube-context #{cluster_name} #{chart.name} #{chart_path}")
+          run_command("helm upgrade --namespace #{namespace} --kube-context #{cluster_name} #{chart.name} #{chart_path}")
         end
       end
     end
@@ -261,15 +288,35 @@ class KubernetesApplication
   end
 
   def install
-    each_service(:install)
+    results = []
+    each_service do |service, config|
+      results << service.install(config)
+    end
+
+    if results.all?
+      puts 'Done ✅'
+    else
+      puts 'Some commands failed ❗️❗️❗️'
+    end
   end
 
   def upgrade
-    each_service(:upgrade)
+    results = []
+    each_service do |service, config|
+      results << service.upgrade(config)
+    end
+
+    if results.all?
+      puts 'Done ✅'
+    else
+      puts 'Some commands failed ❗️❗️❗️'
+    end
   end
 
   def print(method)
-    each_service("print_#{method}".to_sym)
+    each_service do |service, config|
+      service.send("print_#{method}".to_sym, config)
+    end
   end
 
   def combine_charts(app_config)
@@ -285,11 +332,12 @@ class KubernetesApplication
     services
   end
 
-  def each_service(method)
+  def each_service
     services = combine_charts(app_config)
     services.each do |name|
-      service = app_config[:services][name]
-      "::Orchparty::Services::#{service._type.classify}".constantize.new(cluster_name: cluster_name, namespace: namespace, file_path: file_path, app_config: app_config).send(method, service)
+      config = app_config[:services][name]
+      service = "::Orchparty::Services::#{config._type.classify}".constantize.new(cluster_name: cluster_name, namespace: namespace, file_path: file_path, app_config: app_config)
+      yield(service, config)
     end
   end
 end
