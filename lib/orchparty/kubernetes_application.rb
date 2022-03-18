@@ -73,6 +73,10 @@ module Orchparty
 
         status.success?
       end
+
+      def create_namespace_cmd
+        "kubectl --context #{cluster_name} create namespace #{namespace} --dry-run=client -o yaml | kubectl --context #{cluster_name} apply -f -"
+      end
     end
 
     class Helm < Context
@@ -99,7 +103,7 @@ module Orchparty
       end
 
       def install_cmd(apply, fix_file_path = nil)
-        "kubectl apply --namespace #{namespace} --context #{cluster_name} #{template(value_path(apply), apply, fix_file_path: fix_file_path)}"
+        create_namespace_cmd + "&& kubectl apply --namespace #{namespace} --context #{cluster_name} #{template(value_path(apply), apply, fix_file_path: fix_file_path)}"
       end
     end
 
@@ -113,7 +117,7 @@ module Orchparty
       end
 
       def install_cmd(config, fix_file_path = nil)
-        "kubectl create --namespace #{namespace} --context #{cluster_name} #{template(value_path(config), config, fix_file_path: fix_file_path)}"
+        create_namespace_cmd + "&& kubectl create --namespace #{namespace} --context #{cluster_name} #{template(value_path(config), config, fix_file_path: fix_file_path)}"
       end
     end
 
@@ -127,7 +131,7 @@ module Orchparty
       end
 
       def install_cmd(secret, fix_file_path=nil)
-        "kubectl --namespace #{namespace} --context #{cluster_name} create secret generic --dry-run -o yaml #{secret[:name]}  #{template(value_path(secret), secret, flag: "--from-file=", fix_file_path: fix_file_path)} | kubectl --context #{cluster_name} apply -f -"
+        create_namespace_cmd + "&& kubectl --namespace #{namespace} --context #{cluster_name} create secret generic --dry-run -o yaml #{secret[:name]}  #{template(value_path(secret), secret, flag: "--from-file=", fix_file_path: fix_file_path)} | kubectl --context #{cluster_name} apply -f -"
       end
     end
 
@@ -147,7 +151,7 @@ module Orchparty
       end
 
       def install_cmd(label)
-        "kubectl --namespace #{namespace} --context #{cluster_name} label --overwrite #{label[:resource]} #{label[:name]} #{label["value"]}"
+        create_namespace_cmd + "&& kubectl --namespace #{namespace} --context #{cluster_name} label --overwrite #{label[:resource]} #{label[:name]} #{label["value"]}"
       end
     end
 
