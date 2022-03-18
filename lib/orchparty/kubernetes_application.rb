@@ -103,17 +103,17 @@ module Orchparty
       end
     end
 
-    class Replace < Context
-      def value_path(replace)
-        replace[:name]
+    class CreateReplace < Context
+      def value_path(config)
+        config[:name]
       end
 
-      def upgrade_cmd(replace, fix_file_path = nil)
-        "kubectl replace --namespace #{namespace} --context #{cluster_name} #{template(value_path(replace), replace, fix_file_path: fix_file_path)}"
+      def upgrade_cmd(config, fix_file_path = nil)
+        "kubectl replace --namespace #{namespace} --context #{cluster_name} #{template(value_path(config), config, fix_file_path: fix_file_path)}"
       end
 
-      def install_cmd(replace, fix_file_path = nil)
-        "kubectl replace --namespace #{namespace} --context #{cluster_name} #{template(value_path(replace), replace, fix_file_path: fix_file_path)}"
+      def install_cmd(config, fix_file_path = nil)
+        "kubectl create --namespace #{namespace} --context #{cluster_name} #{template(value_path(config), config, fix_file_path: fix_file_path)}"
       end
     end
 

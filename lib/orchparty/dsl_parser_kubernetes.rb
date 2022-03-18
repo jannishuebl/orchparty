@@ -112,8 +112,8 @@ module Orchparty
         self
       end
 
-      def replace(name, &block)
-        result = ServiceBuilder.build(name, "replace", block)
+      def create_replace(name, &block)
+        result = ServiceBuilder.build(name, "create_replace", block)
         @mixin.services[name] = result
         @mixin._mixins[name] = result
         self
@@ -188,8 +188,8 @@ module Orchparty
         self
       end
 
-      def replace(name, &block)
-        result = ServiceBuilder.build(name, "replace", block)
+      def create_replace(name, &block)
+        result = ServiceBuilder.build(name, "create_replace", block)
         @application.services[name] = result
         @application._service_order << name
         self
