@@ -29,7 +29,7 @@ services:
       com.example.overwrite: web
       com.example.web: web label
 volumes:
-  data-volume-1: 
+  data-volume-1:
   data-volume-2:
     external: true
   data-volume-3:
