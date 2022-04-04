@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
     With this gem you can write docker-compose like orchestration configuration with a Ruby DSL, that supports mixins, imports and variables.!
     Out of this you can generate docker-compose.yml v1 or v2. 
   EOF
-  spec.homepage      = "https://orch.party"
+  spec.homepage      = "https://github.com/jannishuebl/orchparty"
   spec.license       = "LGPL-3.0"
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
